@@ -34,7 +34,7 @@
     </div>
   </template>
   
-  <script setup lang="ts">
+  <script setup>
   import heroImg from '../assets/images/hero.png'
   import logo from '../assets/images/logo.svg'
 
