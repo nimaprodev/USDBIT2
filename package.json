@@ -15,6 +15,9 @@
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "latest",
+    "autoprefixer": "^10.4.22",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.17",
     "vite": "latest",
     "vue-tsc": "latest"
   }
