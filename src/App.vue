@@ -23,6 +23,7 @@
         </p>
       </div>
       <ReferralCard/>
+      <TotalCommissionCard/>
     </div>
   </div>
 </template>
@@ -32,5 +33,6 @@ import HeroCard from './components/HeroCard.vue'
 import DepositCard from './components/DepositCard.vue'
 import RewardCard from './components/RewardCard.vue'
 import ReferralCard from './components/ReferralCard.vue'
+import TotalCommissionCard from './components/TotalCommissionCard.vue'
 
 </script>
