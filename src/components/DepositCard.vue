@@ -54,11 +54,16 @@
 import { ref, computed, watch } from 'vue';
 import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt } from '@wagmi/vue';
 import { formatEther, parseEther, maxUint256 } from 'viem';
+import { useToast } from 'vue-toast-notification';
 import { usdbitContractAddress, usdtTokenAddress } from '../contracts/usdbit.js';
 import trendUp from '../assets/images/trend-up.svg'
 import loadingDirective from '../directives/loading.js';
 import {erc20_abi, usdbitABI} from "../contracts/abi.js";
 
+const $toast = useToast({
+  position: 'top-right',
+  duration: 4000,
+});
 const vLoading = loadingDirective;
 const { address, isConnected } = useAccount();
 const total_deposit = ref('0.00');
@@ -106,8 +111,8 @@ const { data: balanceData, refetch: refetchBalance } = useReadContract({
 
 watch(userInfoData, (newVal) => {
     if (newVal) {
-        total_deposit.value = parseFloat(formatEther(newVal.total_deposit)).toFixed(2);
-        total_withdraw.value = parseFloat(formatEther(newVal.total_withdraw)).toFixed(2);
+        total_deposit.value = parseFloat(formatEther(newVal.total_deposit));
+        total_withdraw.value = parseFloat(formatEther(newVal.total_withdraw));
     } else {
         total_deposit.value = '0.00';
         total_withdraw.value = '0.00';
@@ -116,7 +121,7 @@ watch(userInfoData, (newVal) => {
 
 watch(balanceData, (newVal) => {
     if (newVal) {
-        balance.value = parseFloat(formatEther(newVal)).toFixed(2);
+        balance.value = parseFloat(formatEther(newVal));
     } else {
         balance.value = '0.00';
     }
@@ -141,13 +146,13 @@ const selectValue = (value) => {
     } else if (value.endsWith("%")) {
         const percentage = parseInt(value);
         const calculatedAmount = (parseFloat(balance.value) * percentage / 100);
-        amount.value = calculatedAmount.toFixed(2);
+        amount.value = calculatedAmount;
     }
 };
 
 const doDeposit = async () => {
     if (!amount.value || parseFloat(amount.value) <= 0) {
-        alert("Please enter a valid amount.");
+        $toast.error("Please enter a valid amount.");
         return;
     }
 
@@ -158,6 +163,7 @@ const doDeposit = async () => {
         // 1. Check allowance and approve if necessary
         await refetchAllowance();
         if (allowance.value < depositAmount) {
+            $toast.info("Waiting for approval...");
             const approveHash = await approveAsync({
                 abi: erc20_abi,
                 address: usdtTokenAddress,
@@ -170,6 +176,7 @@ const doDeposit = async () => {
         }
 
         // 2. Call deposit function
+        $toast.info("Processing deposit...");
         const depositHash = await depositAsync({
             abi: usdbitABI,
             address: usdbitContractAddress,
@@ -180,7 +187,7 @@ const doDeposit = async () => {
         // Optionally wait for deposit confirmation
         // await waitForTransactionReceipt({ hash: depositHash });
 
-        alert("Deposit successful!");
+        $toast.success("Deposit successful!");
         // Refresh data after deposit
         refetchUserInfo();
         refetchBalance();
@@ -189,7 +196,7 @@ const doDeposit = async () => {
 
     } catch (error) {
         console.error("Deposit failed:", error);
-        alert(`Deposit failed: ${error.shortMessage || error.message}`);
+        $toast.error(error.shortMessage || "Deposit failed. Please try again.");
     } finally {
         isLoading.value = false;
     }
