@@ -1,18 +1,20 @@
-import { VueQueryPlugin } from '@tanstack/vue-query'
-import { WagmiPlugin } from '@wagmi/vue'
-// import { Buffer } from 'buffer'
-import { createApp } from 'vue'
+import {VueQueryPlugin, QueryClient} from '@tanstack/vue-query'
+import {WagmiPlugin} from '@wagmi/vue'
+// import {Buffer} from 'buffer'
+import {createApp} from 'vue'
 
 // `@coinbase-wallet/sdk` uses `Buffer`
 // globalThis.Buffer = Buffer
 
 import App from './App.vue'
 import './style.css'
-import { config } from './wagmi'
+import {config} from './wagmi'
 
 const app = createApp(App)
+const queryClient = new QueryClient()
 
-app.use(WagmiPlugin, { config })
-app.use(VueQueryPlugin, {})
 
-app.mount('#app')
+app
+    .use(WagmiPlugin, {config})
+    .use(VueQueryPlugin, { queryClient })
+    .mount('#app')

@@ -9,13 +9,13 @@ importers:
   .:
     dependencies:
       '@tanstack/vue-query':
-        specifier: latest
+        specifier: ^5.92.0
         version: 5.92.0(vue@3.5.25(typescript@5.9.3))
       '@wagmi/vue':
-        specifier: latest
+        specifier: ^0.4.2
         version: 0.4.2(@tanstack/query-core@5.90.11)(@tanstack/vue-query@5.92.0(vue@3.5.25(typescript@5.9.3)))(typescript@5.9.3)(viem@2.40.3(typescript@5.9.3))(vue@3.5.25(typescript@5.9.3))
       viem:
-        specifier: latest
+        specifier: ^2.40.3
         version: 2.40.3(typescript@5.9.3)
       vue:
         specifier: latest
