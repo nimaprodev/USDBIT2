@@ -22,6 +22,7 @@
           next-level staking — where smart investing meets real rewards.
         </p>
       </div>
+      <ReferralCard/>
     </div>
   </div>
 </template>
@@ -30,5 +31,6 @@
 import HeroCard from './components/HeroCard.vue'
 import DepositCard from './components/DepositCard.vue'
 import RewardCard from './components/RewardCard.vue'
+import ReferralCard from './components/ReferralCard.vue'
 
 </script>
