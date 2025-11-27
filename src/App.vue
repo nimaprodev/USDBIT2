@@ -22,8 +22,25 @@
           next-level staking — where smart investing meets real rewards.
         </p>
       </div>
-      <ReferralCard/>
-      <TotalCommissionCard/>
+      <ReferralCard />
+      <TotalCommissionCard />
+      <div class="text-white p-6 my-6">
+        <p class="text-base font-semibold">Level System</p>
+        <div class="flex gap-2">
+          <p class="text-2xl font-extrabold">
+            Progress
+          </p>
+          <p class="text-2xl font-extrabold text-primary">
+            with Purpose
+          </p>
+        </div>
+        <p class="text-justify mt-4 text-base leading-loose text-gray-400">
+          USDBIT’s 3-level structure is designed to reward your activity and consistency. Start at Level 1, unlock
+          greater benefits at Level 2, and reach Level 3 for maximum bonuses and exclusive opportunities. The more you
+          participate, the more you earn—simple, transparent, motivating.
+        </p>
+      </div>
+      <Footer/>
     </div>
   </div>
 </template>
@@ -34,5 +51,6 @@ import DepositCard from './components/DepositCard.vue'
 import RewardCard from './components/RewardCard.vue'
 import ReferralCard from './components/ReferralCard.vue'
 import TotalCommissionCard from './components/TotalCommissionCard.vue'
+import Footer from './components/Footer.vue'
 
 </script>
