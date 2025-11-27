@@ -42,7 +42,7 @@
             <img :src="trendUp" alt="trendUp Image" class="object-contain" />
             <p class="text-xs text-gray-400">Your Balance {{ balance }} USDT</p>
         </div>
-        <button class="w-full bg-primary text-white font-semibold py-3 rounded-lg hover:opacity-90 transition">
+        <button class="w-full bg-primary text-white font-semibold py-3 rounded-lg hover:opacity-90 transition" v-loading="true">
             Deposit Now
         </button>
     </div>
@@ -54,9 +54,9 @@ import { useAccount, useReadContract } from '@wagmi/vue';
 import { formatEther } from 'viem';
 import { usdbitContractAddress, usdbitABI, usdtTokenAddress, usdtTokenABI } from '../contracts/usdbit.js';
 import trendUp from '../assets/images/trend-up.svg'
-
+import loadingDirective from '../directives/loading.js';
+const vLoading = loadingDirective;
 const { address, isConnected } = useAccount();
-
 const total_deposit = ref('0.00');
 const total_withdraw = ref('0.00');
 const balance = ref('0.00');
