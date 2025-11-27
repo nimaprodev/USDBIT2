@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-gray-100 p-6 rounded-md max-w-[380px] mx-auto  shadow-lg">
+    <div class="bg-gray-100 p-6 rounded-md w-full ">
 
         <div class="flex justify-between gap-2 ">
             <div class="flex-1 bg-gray-50 p-4 rounded-md flex flex-col ">
@@ -38,11 +38,12 @@
                 </div>
             </div>
         </div>
-        <div class="flex items-center justify-end  mt-5 mb-2">
+        <div class="flex items-center justify-end mt-5 mb-2">
             <img :src="trendUp" alt="trendUp Image" class="object-contain" />
             <p class="text-xs text-gray-400">Your Balance {{ balance }} USDT</p>
         </div>
-        <button class="w-full bg-primary text-white font-semibold py-3 rounded-lg hover:opacity-90 transition" v-loading="true">
+        <button class="w-full bg-primary text-white font-semibold py-3 rounded-lg hover:opacity-90 transition"
+            v-loading="true">
             Deposit Now
         </button>
     </div>
