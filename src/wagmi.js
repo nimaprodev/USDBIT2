@@ -10,9 +10,3 @@ export const config = createConfig({
     [bscTestnet.id]: http(),
   },
 })
-
-declare module '@wagmi/vue' {
-  interface Register {
-    config: typeof config
-  }
-}
