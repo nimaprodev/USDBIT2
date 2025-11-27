@@ -18,10 +18,10 @@
                 <label class="text-gray-300 text-sm mb-2" for="amount">Amount</label>
 
                 <div class="relative">
-                    <input id="amount" type="number" placeholder="Enter amount" class="w-full p-3 pr-16 rounded-lg bg-gray-700 text-white 
+                    <input id="amount" type="number" v-model="amount" placeholder="Enter amount" class="w-full p-3 pr-16 rounded-lg bg-gray-700 text-white
              focus:outline-none focus:ring-2 focus:ring-primary" />
 
-                    <span class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-300 text-sm font-semibold">
+                    <span class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-300 text-sm font-semibold select-none">
                         USDT
                     </span>
                 </div>
@@ -31,8 +31,8 @@
                 <div v-for="item in quickValues" :key="item" @click="selectValue(item)" :class="[
                     'px-2.5 py-1 rounded-md  text-xs font-medium cursor-pointer border transition whitespace-nowrap',
                     selected === item
-                        ? 'bg-gray-200 text-white border-primary'
-                        : 'text-gray-300 border-gray-200 hover:border-primary'
+                        ? 'bg-gray-600 text-white border-primary'
+                        : 'text-gray-500 border-gray-500 hover:border-primary'
                 ]">
                     {{ item }}
                 </div>
@@ -43,7 +43,8 @@
             <p class="text-xs text-gray-400">Your Balance {{ balance }} USDT</p>
         </div>
         <button class="w-full bg-primary text-white font-semibold py-3 rounded-lg hover:opacity-90 transition"
-            v-loading="true">
+            v-loading="isLoading"
+            @click="doDeposit">
             Deposit Now
         </button>
     </div>
@@ -51,17 +52,37 @@
 
 <script setup>
 import { ref, computed, watch } from 'vue';
-import { useAccount, useReadContract } from '@wagmi/vue';
-import { formatEther } from 'viem';
-import { usdbitContractAddress, usdbitABI, usdtTokenAddress, usdtTokenABI } from '../contracts/usdbit.js';
+import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt } from '@wagmi/vue';
+import { formatEther, parseEther, maxUint256 } from 'viem';
+import { usdbitContractAddress, usdtTokenAddress } from '../contracts/usdbit.js';
 import trendUp from '../assets/images/trend-up.svg'
 import loadingDirective from '../directives/loading.js';
+import {erc20_abi, usdbitABI} from "../contracts/abi.js";
+
 const vLoading = loadingDirective;
 const { address, isConnected } = useAccount();
 const total_deposit = ref('0.00');
 const total_withdraw = ref('0.00');
 const balance = ref('0.00');
+const isLoading = ref(false);
+const amount = ref('');
+const selected = ref(null);
 const quickValues = ["10%", "25%", "50%", "75%", "MAX"]
+
+// --- Hooks for contract interaction ---
+const { data: allowance, refetch: refetchAllowance } = useReadContract({
+    abi: erc20_abi,
+    address: usdtTokenAddress,
+    functionName: 'allowance',
+    args: computed(() => [address.value, usdbitContractAddress]),
+    query: {
+        enabled: computed(() => isConnected.value && !!address.value),
+    }
+});
+
+const { writeContractAsync: approveAsync } = useWriteContract();
+const { writeContractAsync: depositAsync } = useWriteContract();
+
 
 const { data: userInfoData, refetch: refetchUserInfo } = useReadContract({
     abi: usdbitABI,
@@ -74,7 +95,7 @@ const { data: userInfoData, refetch: refetchUserInfo } = useReadContract({
 });
 
 const { data: balanceData, refetch: refetchBalance } = useReadContract({
-    abi: usdtTokenABI,
+    abi: erc20_abi,
     address: usdtTokenAddress,
     functionName: 'balanceOf',
     args: [address],
@@ -105,10 +126,72 @@ watch(isConnected, (connected) => {
     if (connected) {
         refetchUserInfo();
         refetchBalance();
+        refetchAllowance();
     } else {
         total_deposit.value = '0.00';
         total_withdraw.value = '0.00';
         balance.value = '0.00';
     }
 });
+
+const selectValue = (value) => {
+    selected.value = value;
+    if (value === "MAX") {
+        amount.value = balance.value;
+    } else if (value.endsWith("%")) {
+        const percentage = parseInt(value);
+        const calculatedAmount = (parseFloat(balance.value) * percentage / 100);
+        amount.value = calculatedAmount.toFixed(2);
+    }
+};
+
+const doDeposit = async () => {
+    if (!amount.value || parseFloat(amount.value) <= 0) {
+        alert("Please enter a valid amount.");
+        return;
+    }
+
+    isLoading.value = true;
+    try {
+        const depositAmount = parseEther(amount.value.toString());
+
+        // 1. Check allowance and approve if necessary
+        await refetchAllowance();
+        if (allowance.value < depositAmount) {
+            const approveHash = await approveAsync({
+                abi: erc20_abi,
+                address: usdtTokenAddress,
+                functionName: 'approve',
+                args: [usdbitContractAddress, maxUint256] // Approve max for simplicity
+            });
+            // You can optionally wait for the transaction to be mined
+            // const { status } = await waitForTransactionReceipt({ hash: approveHash });
+            // if (status !== 'success') throw new Error("Approval failed");
+        }
+
+        // 2. Call deposit function
+        const depositHash = await depositAsync({
+            abi: usdbitABI,
+            address: usdbitContractAddress,
+            functionName: 'deposit',
+            args: [depositAmount]
+        });
+
+        // Optionally wait for deposit confirmation
+        // await waitForTransactionReceipt({ hash: depositHash });
+
+        alert("Deposit successful!");
+        // Refresh data after deposit
+        refetchUserInfo();
+        refetchBalance();
+        amount.value = '';
+        selected.value = null;
+
+    } catch (error) {
+        console.error("Deposit failed:", error);
+        alert(`Deposit failed: ${error.shortMessage || error.message}`);
+    } finally {
+        isLoading.value = false;
+    }
+};
 </script>
