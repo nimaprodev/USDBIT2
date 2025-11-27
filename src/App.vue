@@ -1,19 +1,14 @@
-<script setup lang="ts">
-import Connect from './components/Connect.vue'
-import Connection from './components/Connection.vue'
-</script>
-
 <template>
-  <Connection />
-  <Balance />
-  <Connect />
-  <Connections />
-  <SwitchAccount />
-  <SwitchChain />
-  <BlockNumber />
-  <ReadContract />
-  <SendTransaction />
-  <WriteContract />
-  <Client />
-  <ConnectorClient />
+  <div class="w-full min-h-screen flex justify-center items-start">
+    <div class="w-[380px] min-h-[700px] overflow-hidden">
+      <HeroCard />
+      <DepositCard />
+    </div>
+  </div>
 </template>
+
+<script setup lang="ts">
+import HeroCard from './components/HeroCard.vue'
+import DepositCard from './components/DepositCard.vue'
+
+</script>
