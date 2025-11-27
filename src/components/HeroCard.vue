@@ -2,9 +2,8 @@
     <div class="relative bg-bgCard shadow-custom-glow p-6  text-center overflow-hidden">
       
       <header class="absolute top-0 left-0 w-full flex items-center justify-between px-5 py-4">
-        <div class="text-white font-semibold tracking-wider">
-          USDBIT
-        </div>
+        <img :src="logo" alt="Hero Image" class="object-cover " />
+
         <button class="bg-primary text-white px-4 py-2 rounded-md">
           Connect Wallet
         </button>
@@ -37,5 +36,7 @@
   
   <script setup lang="ts">
   import heroImg from '../assets/images/hero.png'
+  import logo from '../assets/images/logo.svg'
+
   </script>
   
