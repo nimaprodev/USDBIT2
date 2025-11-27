@@ -53,7 +53,7 @@
 
   const shortAddress = computed(() => {
     if (address.value) {
-      return `${address.value.substring(0, 6)}...${address.value.substring(address.value.length - 4)}`
+      return `${address.value.substring(0, 4)}...${address.value.substring(address.value.length - 6)}`
     }
     return ''
   })

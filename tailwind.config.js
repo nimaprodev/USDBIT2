@@ -17,7 +17,9 @@ export default {
           'custom-glow': '0 -3px 97px -51px #BDFFDE', 
         },
         fontFamily: {
-          body: ["Kanit", "Helvetica", "Arial", "sans-serif"],
+          body: ["Inter", "Helvetica", "Arial", "sans-serif"],
+          sans: ["Inter", "Helvetica", "Arial", "sans-serif"],
+          mono: ["Inter", "Helvetica", "Arial", "sans-serif"],
         },
         screens: {
           sx: '390px',
