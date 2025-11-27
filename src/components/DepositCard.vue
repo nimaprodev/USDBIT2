@@ -19,7 +19,7 @@
              class="p-3 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-primary"/>
     </div>
     <p class="text-xs text-gray-400 mt-2 mb-4">Your Balance {{ balance }} USDT </p>
-    <button class="w-full bg-primary text-white font-semibold py-3 rounded-lg hover:opacity-90 transition">
+    <button class="w-full bg-primary text-white font-semibold py-3 rounded-lg hover:opacity-90 transition" v-loading="true">
       Deposit Now
     </button>
   </div>
@@ -30,6 +30,10 @@ import {ref, computed, watch} from 'vue';
 import {useAccount, useReadContract} from '@wagmi/vue';
 import {formatEther} from 'viem';
 import {usdbitContractAddress, usdbitABI, usdtTokenAddress, usdtTokenABI} from '../contracts/usdbit.js';
+import loadingDirective from '../directives/loading.js';
+
+const vLoading = loadingDirective;
+
 
 const {address, isConnected} = useAccount();
 

@@ -30,7 +30,7 @@
     }
 
     .loading-spinner {
-        border: 5px dotted #000000;
+        border: 5px dotted #FFF;
         border-radius: 50%;
         width: 24px;
         display: block;
