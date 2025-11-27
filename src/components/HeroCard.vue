@@ -34,9 +34,9 @@
     </div>
 </template>
   
-<script setup>
-import heroImg from '../assets/images/hero.png'
-import logo from '../assets/images/logo.svg'
+  <script setup>
+  import heroImg from '../assets/images/hero.png'
+  import logo from '../assets/images/logo.svg'
 
 </script>
   
