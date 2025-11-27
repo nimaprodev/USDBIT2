@@ -1,9 +1,15 @@
 <template>
     <div class="relative bg-bgCard shadow-custom-glow  text-center overflow-hidden">
 
-        <header class="absolute top-0 left-0 w-full flex items-center justify-between px-5 py-4">
+        <header class="absolute top-0 left-0 w-full flex items-center justify-between px-5 py-4 z-10">
             <img :src="logo" alt="Hero Image" class="object-cover " />
-            <button class="bg-primary text-white px-4 py-2 rounded-md">
+            <div v-if="isConnected" class="flex items-center space-x-2">
+                <span class="text-black text-sm  bg-yellow-500  px-3 py-1 rounded-md">{{ shortAddress }}</span>
+<!--                <button @click="() => disconnect()">-->
+<!--                    Disconnect-->
+<!--                </button>-->
+            </div>
+            <button v-else @click="() => connect({ connector: connectors[0] })" class="bg-primary text-white px-4 py-2 rounded-md">
                 Connect Wallet
             </button>
         </header>
@@ -33,10 +39,22 @@
         </div>
     </div>
 </template>
-  
-  <script setup>
+
+<script setup>
   import heroImg from '../assets/images/hero.png'
   import logo from '../assets/images/logo.svg'
+  import { useAccount, useConnect, useDisconnect, useConnectors } from '@wagmi/vue'
+  import { computed } from 'vue'
 
+  const { address, isConnected } = useAccount()
+  const { connect } = useConnect()
+  // const { disconnect } = useDisconnect()
+  const connectors = useConnectors()
+
+  const shortAddress = computed(() => {
+    if (address.value) {
+      return `${address.value.substring(0, 6)}...${address.value.substring(address.value.length - 4)}`
+    }
+    return ''
+  })
 </script>
-  
