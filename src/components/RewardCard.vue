@@ -18,7 +18,7 @@
                         <span class="text-xl font-semibold text-white leading-none mt-3">
                             {{formatDisplayNumber(your_reward, 6)}} USDT
                         </span>
-                        <button v-loading.empty="isWithdrawRewardLoading" @click="withdrawReward" class="text-white text-sm mt-5 inline-flex items-center justify-center bg-secondary p-2 px-5 rounded">
+                        <button v-loading="isWithdrawRewardLoading" @click="withdrawReward" class="text-white text-sm mt-5 inline-flex items-center justify-center bg-secondary p-2 px-5 rounded">
                             <span class="inline-flex items-center">
                                 Withdraw Now
                                 <img :src="arrowRight" alt="arrow right" class="ml-4 align-middle" />
