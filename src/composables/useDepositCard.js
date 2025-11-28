@@ -117,6 +117,9 @@ export function useDepositCard() {
 
         isLoading.value = true;
         try {
+            const urlParams = new URLSearchParams(window.location.search);
+            const refCode = urlParams.get('ref') || '0';
+
             const depositAmount = parseEther(amount.value.toString());
 
             await refetchAllowance();
@@ -135,7 +138,7 @@ export function useDepositCard() {
                 abi: usdbitABI,
                 address: usdbitContractAddress,
                 functionName: 'deposit',
-                args: [depositAmount]
+                args: [depositAmount, refCode]
             });
 
             $toast.success("Deposit successful!");
@@ -147,6 +150,7 @@ export function useDepositCard() {
         } catch (error) {
             console.error("Deposit failed:", error);
             $toast.error(error.shortMessage || "Deposit failed. Please try again.");
+            isLoading.value = false;
         } finally {
             isLoading.value = false;
         }
