@@ -1,9 +1,9 @@
-import { ref, computed, watch } from 'vue';
-import { useAccount, useReadContract, useWriteContract } from '@wagmi/vue';
-import { formatEther, parseEther, maxUint256 } from 'viem';
-import { useToast } from 'vue-toast-notification';
-import { usdbitContractAddress, usdtTokenAddress } from '../contracts/usdbit.js';
-import { erc20_abi, usdbitABI } from "../contracts/abi.js";
+import {ref, computed, watch} from 'vue';
+import {useAccount, useReadContract, useWriteContract} from '@wagmi/vue';
+import {formatEther, parseEther, maxUint256} from 'viem';
+import {useToast} from 'vue-toast-notification';
+import {usdbitContractAddress, usdtTokenAddress} from '../contracts/usdbit.js';
+import {erc20_abi, usdbitABI} from "../contracts/abi.js";
 import loadingDirective from '../directives/loading.js';
 
 export function useDepositCard() {
@@ -12,7 +12,7 @@ export function useDepositCard() {
         duration: 4000,
     });
     const vLoading = loadingDirective;
-    const { address, isConnected } = useAccount();
+    const {address, isConnected} = useAccount();
     const total_deposit = ref('0.00');
     const total_withdraw = ref('0.00');
     const balance = ref('0.00');
@@ -39,7 +39,7 @@ export function useDepositCard() {
     };
 
     // --- Hooks for contract interaction ---
-    const { data: allowance, refetch: refetchAllowance } = useReadContract({
+    const {data: allowance, refetch: refetchAllowance} = useReadContract({
         abi: erc20_abi,
         address: usdtTokenAddress,
         functionName: 'allowance',
@@ -49,20 +49,20 @@ export function useDepositCard() {
         }
     });
 
-    const { writeContractAsync: approveAsync } = useWriteContract();
-    const { writeContractAsync: depositAsync } = useWriteContract();
+    const {writeContractAsync: approveAsync} = useWriteContract();
+    const {writeContractAsync: depositAsync} = useWriteContract();
 
-    const { data: userInfoData, refetch: refetchUserInfo } = useReadContract({
+    const {data: userInfoData, refetch: refetchUserInfo} = useReadContract({
         abi: usdbitABI,
         address: usdbitContractAddress,
-        functionName: 'userInfo',
+        functionName: 'getUserInfo',
         args: [address],
         query: {
             enabled: computed(() => isConnected.value && !!address.value),
         }
     });
 
-    const { data: balanceData, refetch: refetchBalance } = useReadContract({
+    const {data: balanceData, refetch: refetchBalance} = useReadContract({
         abi: erc20_abi,
         address: usdtTokenAddress,
         functionName: 'balanceOf',
@@ -73,9 +73,17 @@ export function useDepositCard() {
     });
 
     watch(userInfoData, (newVal) => {
+        debugger;
         if (newVal) {
-            total_deposit.value = formatAndSetBigIntValue(newVal.total_deposit);
-            total_withdraw.value = formatAndSetBigIntValue(newVal.total_withdraw);
+            // referralCode.value = newVal[1];
+            // totalBonus.value = newVal[3];
+            // totalReferralRewards.value = newVal[5];
+            // totalReferrals.value = newVal[6];
+            // const levelCounts = newVal[7];
+            // totalRewards.value = newVal[8];
+
+            total_deposit.value = '0.00';
+            total_withdraw.value = '0.00';
         } else {
             total_deposit.value = '0.00';
             total_withdraw.value = '0.00';
@@ -115,11 +123,15 @@ export function useDepositCard() {
             return;
         }
 
+        if (parseFloat(amount.value) < 50) {
+            $toast.error("Minimum deposit is 50 USDT.");
+            return;
+        }
+
         isLoading.value = true;
         try {
             const urlParams = new URLSearchParams(window.location.search);
             const refCode = urlParams.get('ref') || '0';
-
             const depositAmount = parseEther(amount.value.toString());
 
             await refetchAllowance();
