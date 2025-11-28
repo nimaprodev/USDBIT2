@@ -13,6 +13,7 @@ export function useUser() {
     const toast = useToast();
     const vLoading = loadingDirective;
 
+    const userInfo = ref(null);
     const total_deposit = ref('0.00');
     const total_withdraw = ref('0.00');
     const your_reward = ref('0.00');
