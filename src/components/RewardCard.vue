@@ -16,11 +16,13 @@
                         <p class="text-primary font-semibold text-sm">Your Reward</p>
 
                         <span class="text-xl font-semibold text-white leading-none mt-3">
-                            {{formatDisplayNumber(your_reward)}} USDT
+                            {{formatDisplayNumber(your_reward, 6)}} USDT
                         </span>
-                        <button  class="text-white text-sm mt-5 inline-flex items-center bg-secondary p-2 rounded">
-                            Withdraw Now
-                            <img :src="arrowRight" alt="arrow right" class="ml-2 align-middle" />
+                        <button v-loading.empty="isWithdrawRewardLoading" @click="withdrawReward" class="text-white text-sm mt-5 inline-flex items-center justify-center bg-secondary p-2 px-5 rounded">
+                            <span class="inline-flex items-center">
+                                Withdraw Now
+                                <img :src="arrowRight" alt="arrow right" class="ml-4 align-middle" />
+                            </span>
                         </button>
                     </div>
                 </div>
@@ -35,5 +37,5 @@ import walletMoney from '../assets/images/wallet-money.svg'
 import arrowRight from '../assets/images/arrow-right.svg'
 import { useUser } from '../composables/useUser.js';
 
-const { your_reward,   formatDisplayNumber} = useUser();
+const { your_reward, formatDisplayNumber, withdrawReward, vLoading, isWithdrawRewardLoading } = useUser();
 </script>

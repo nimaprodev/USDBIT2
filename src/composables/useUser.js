@@ -1,20 +1,48 @@
 
 import {ref, computed, watch} from 'vue';
-import {useAccount, useReadContract} from '@wagmi/vue';
+import {useAccount, useReadContract, useWriteContract} from '@wagmi/vue';
+import {usdbitABI} from '../contracts/abi';
+import {usdbitContractAddress} from '../contracts/usdbit';
 import {formatEther} from 'viem';
-import {usdbitContractAddress} from '../contracts/usdbit.js';
-import {usdbitABI} from "../contracts/abi.js";
 import { formatDisplayNumber } from '../utils/format.js';
-
-// A cache to hold user data and prevent re-fetching across components
-const userInfo = ref(null);
+import { useToast } from 'vue-toast-notification';
+import loadingDirective from '../directives/loading.js';
 
 export function useUser() {
     const {address, isConnected} = useAccount();
+    const toast = useToast();
+    const vLoading = loadingDirective;
 
     const total_deposit = ref('0.00');
     const total_withdraw = ref('0.00');
     const your_reward = ref('0.00');
+
+    const {writeContractAsync: withdrawRewardAsync} = useWriteContract();
+
+    const isWithdrawRewardLoading = ref(false);
+
+    const withdrawReward = async () => {
+        if (parseFloat(your_reward.value) <= 0) {
+            toast.warning('No profit to withdraw');
+            return;
+        }
+        isWithdrawRewardLoading.value = true;
+        try {
+            toast.info('Withdrawing reward...');
+            await withdrawRewardAsync({
+                abi: usdbitABI,
+                address: usdbitContractAddress,
+                functionName: 'withdrawPlanProfit',
+            });
+            toast.success('Reward withdrawn successfully!');
+            refetchUserInfo();
+        } catch (error) {
+            console.error("Withdraw failed:", error);
+            toast.error(error.shortMessage || "Withdraw failed. Please try again.");
+        } finally {
+            isWithdrawRewardLoading.value = false;
+        }
+    };
 
     const formatAndSetBigIntValue = (bigIntValue) => {
         if (bigIntValue) {
@@ -82,8 +110,11 @@ export function useUser() {
     return {
         total_deposit,
         total_withdraw,
-        formatDisplayNumber,
         your_reward,
         refetchUserInfo,
+        formatDisplayNumber,
+        withdrawReward,
+        isWithdrawRewardLoading,
+        vLoading,
     };
 }
