@@ -1,10 +1,11 @@
 import {ref, computed, watch} from 'vue';
-import {useAccount, useReadContract, useWriteContract} from '@wagmi/vue';
-import {formatEther, parseEther, maxUint256} from 'viem';
-import {useToast} from 'vue-toast-notification';
-import {usdbitContractAddress, usdtTokenAddress} from '../contracts/usdbit.js';
 import {erc20_abi, usdbitABI} from "../contracts/abi.js";
+import {useAccount, useReadContract, useWriteContract} from '@wagmi/vue';
 import loadingDirective from '../directives/loading.js';
+import {usdbitContractAddress, usdtTokenAddress} from '../contracts/usdbit.js';
+import {useToast} from 'vue-toast-notification';
+import {formatEther, parseEther, maxUint256} from 'viem';
+import {useUser} from "./useUser.js";
 
 export function useDepositCard() {
     const $toast = useToast({
@@ -13,8 +14,7 @@ export function useDepositCard() {
     });
     const vLoading = loadingDirective;
     const {address, isConnected} = useAccount();
-    const total_deposit = ref('0.00');
-    const total_withdraw = ref('0.00');
+    const { total_deposit, total_withdraw, refetchUserInfo } = useUser();
     const balance = ref('0.00');
     const isLoading = ref(false);
     const amount = ref('');
@@ -22,11 +22,10 @@ export function useDepositCard() {
     const quickValues = ["10%", "25%", "50%", "75%", "MAX"];
 
     const formatDisplayNumber = (value) => {
-        if (typeof value === 'undefined' || value === null) return '0.00';
+        if (typeof value === 'undefined' || value === null) return '0';
         const number = parseFloat(value);
-        if (isNaN(number)) return '0.00';
+        if (isNaN(number)) return '0';
         return new Intl.NumberFormat('en-US', {
-            minimumFractionDigits: 2,
             maximumFractionDigits: 3,
         }).format(number);
     };
@@ -52,16 +51,6 @@ export function useDepositCard() {
     const {writeContractAsync: approveAsync} = useWriteContract();
     const {writeContractAsync: depositAsync} = useWriteContract();
 
-    const {data: userInfoData, refetch: refetchUserInfo} = useReadContract({
-        abi: usdbitABI,
-        address: usdbitContractAddress,
-        functionName: 'getUserInfo',
-        args: [address],
-        query: {
-            enabled: computed(() => isConnected.value && !!address.value),
-        }
-    });
-
     const {data: balanceData, refetch: refetchBalance} = useReadContract({
         abi: erc20_abi,
         address: usdtTokenAddress,
@@ -72,36 +61,15 @@ export function useDepositCard() {
         }
     });
 
-    watch(userInfoData, (newVal) => {
-        debugger;
-        if (newVal) {
-            // referralCode.value = newVal[1];
-            // totalBonus.value = newVal[3];
-            // totalReferralRewards.value = newVal[5];
-            // totalReferrals.value = newVal[6];
-            // const levelCounts = newVal[7];
-            // totalRewards.value = newVal[8];
-
-            total_deposit.value = '0.00';
-            total_withdraw.value = '0.00';
-        } else {
-            total_deposit.value = '0.00';
-            total_withdraw.value = '0.00';
-        }
-    });
-
     watch(balanceData, (newVal) => {
         balance.value = formatAndSetBigIntValue(newVal);
     });
 
     watch(isConnected, (connected) => {
         if (connected) {
-            refetchUserInfo();
             refetchBalance();
             refetchAllowance();
         } else {
-            total_deposit.value = '0.00';
-            total_withdraw.value = '0.00';
             balance.value = '0.00';
         }
     });

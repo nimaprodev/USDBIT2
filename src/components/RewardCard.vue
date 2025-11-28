@@ -16,12 +16,12 @@
                         <p class="text-primary font-semibold text-sm">Your Reward</p>
 
                         <span class="text-xl font-semibold text-white leading-none mt-3">
-                            123.45 USDT
+                            {{your_reward}} USDT
                         </span>
-                        <a href="#" class="text-white text-xs mt-3 inline-flex items-center">
+                        <button  class="text-white text-sm mt-5 inline-flex items-center bg-secondary p-2 rounded">
                             Withdraw Now
                             <img :src="arrowRight" alt="arrow right" class="ml-2 align-middle" />
-                        </a>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -33,6 +33,7 @@
 import rewardImg from '../assets/images/reward.png'
 import walletMoney from '../assets/images/wallet-money.svg'
 import arrowRight from '../assets/images/arrow-right.svg'
+import { useUser } from '../composables/useUser.js';
 
+const { your_reward } = useUser();
 </script>
-
