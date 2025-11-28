@@ -16,7 +16,7 @@
                         <p class="text-primary font-semibold text-sm">Your Reward</p>
 
                         <span class="text-xl font-semibold text-white leading-none mt-3">
-                            {{your_reward}} USDT
+                            {{formatDisplayNumber(your_reward)}} USDT
                         </span>
                         <button  class="text-white text-sm mt-5 inline-flex items-center bg-secondary p-2 rounded">
                             Withdraw Now
@@ -35,5 +35,5 @@ import walletMoney from '../assets/images/wallet-money.svg'
 import arrowRight from '../assets/images/arrow-right.svg'
 import { useUser } from '../composables/useUser.js';
 
-const { your_reward } = useUser();
+const { your_reward,   formatDisplayNumber} = useUser();
 </script>

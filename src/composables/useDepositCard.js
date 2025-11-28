@@ -6,6 +6,7 @@ import {usdbitContractAddress, usdtTokenAddress} from '../contracts/usdbit.js';
 import {useToast} from 'vue-toast-notification';
 import {formatEther, parseEther, maxUint256} from 'viem';
 import {useUser} from "./useUser.js";
+import { formatDisplayNumber } from '../utils/format.js';
 
 export function useDepositCard() {
     const $toast = useToast({
@@ -21,14 +22,7 @@ export function useDepositCard() {
     const selected = ref(null);
     const quickValues = ["10%", "25%", "50%", "75%", "MAX"];
 
-    const formatDisplayNumber = (value) => {
-        if (typeof value === 'undefined' || value === null) return '0';
-        const number = parseFloat(value);
-        if (isNaN(number)) return '0';
-        return new Intl.NumberFormat('en-US', {
-            maximumFractionDigits: 3,
-        }).format(number);
-    };
+
 
     const formatAndSetBigIntValue = (bigIntValue) => {
         if (bigIntValue) {

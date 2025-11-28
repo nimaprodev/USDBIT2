@@ -4,6 +4,7 @@ import {useAccount, useReadContract} from '@wagmi/vue';
 import {formatEther} from 'viem';
 import {usdbitContractAddress} from '../contracts/usdbit.js';
 import {usdbitABI} from "../contracts/abi.js";
+import { formatDisplayNumber } from '../utils/format.js';
 
 // A cache to hold user data and prevent re-fetching across components
 const userInfo = ref(null);
@@ -46,7 +47,6 @@ export function useUser() {
     });
 
     watch(totalProfitData, (newVal) => {
-        debugger;
         your_reward.value = formatAndSetBigIntValue(newVal);
     });
 
@@ -82,6 +82,7 @@ export function useUser() {
     return {
         total_deposit,
         total_withdraw,
+        formatDisplayNumber,
         your_reward,
         refetchUserInfo,
     };
