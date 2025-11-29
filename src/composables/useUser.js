@@ -3,7 +3,6 @@ import {ref, computed, watch} from 'vue';
 import {useAccount, useReadContract, useWriteContract} from '@wagmi/vue';
 import {usdbitABI} from '../contracts/abi';
 import {usdbitContractAddress} from '../contracts/usdbit';
-import {formatEther} from 'viem';
 import { formatDisplayNumber } from '../utils/format.js';
 import { useToast } from 'vue-toast-notification';
 import loadingDirective from '../directives/loading.js';
@@ -45,12 +44,6 @@ export function useUser() {
         }
     };
 
-    const formatAndSetBigIntValue = (bigIntValue) => {
-        if (bigIntValue) {
-            return formatEther(bigIntValue);
-        }
-        return '0.00';
-    };
 
     const {data: totalProfitData, refetch: refetchTotalProfit} = useReadContract({
         abi: usdbitABI,
@@ -76,14 +69,14 @@ export function useUser() {
     });
 
     watch(totalProfitData, (newVal) => {
-        your_reward.value = formatAndSetBigIntValue(newVal);
+        your_reward.value = (newVal);
     });
 
     watch(userInfoData, (newVal) => {
         userInfo.value = newVal; // Cache the data
         if (newVal) {
-            total_deposit.value = formatAndSetBigIntValue(newVal[9]);
-            total_withdraw.value = formatAndSetBigIntValue(newVal[10]);
+            total_deposit.value = (newVal[9]);
+            total_withdraw.value = (newVal[10]);
         } else {
             total_deposit.value = '0.00';
             total_withdraw.value = '0.00';
@@ -104,14 +97,15 @@ export function useUser() {
 
     // If there's cached data, use it immediately
     if (userInfo.value) {
-        total_deposit.value = formatAndSetBigIntValue(userInfo.value[9]);
-        total_withdraw.value = formatAndSetBigIntValue(userInfo.value[10]);
+        total_deposit.value = (userInfo.value[9]);
+        total_withdraw.value = (userInfo.value[10]);
     }
 
     return {
         total_deposit,
         total_withdraw,
         your_reward,
+        refetchUserInfo,
         refetchUserInfo,
         formatDisplayNumber,
         withdrawReward,

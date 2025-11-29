@@ -4,7 +4,7 @@ import {useAccount, useReadContract, useWriteContract} from '@wagmi/vue';
 import loadingDirective from '../directives/loading.js';
 import {usdbitContractAddress, usdtTokenAddress} from '../contracts/usdbit.js';
 import {useToast} from 'vue-toast-notification';
-import {formatEther, parseEther, maxUint256} from 'viem';
+import {parseEther, maxUint256} from 'viem';
 import {useUser} from "./useUser.js";
 import { formatDisplayNumber } from '../utils/format.js';
 
@@ -22,14 +22,6 @@ export function useDepositCard() {
     const selected = ref(null);
     const quickValues = ["10%", "25%", "50%", "75%", "MAX"];
 
-
-
-    const formatAndSetBigIntValue = (bigIntValue) => {
-        if (bigIntValue) {
-            return formatEther(bigIntValue);
-        }
-        return '0.00';
-    };
 
     // --- Hooks for contract interaction ---
     const {data: allowance, refetch: refetchAllowance} = useReadContract({
@@ -56,7 +48,7 @@ export function useDepositCard() {
     });
 
     watch(balanceData, (newVal) => {
-        balance.value = formatAndSetBigIntValue(newVal);
+        balance.value = (newVal);
     });
 
     watch(isConnected, (connected) => {

@@ -1,9 +1,100 @@
 <template>
   <div class="w-full min-h-screen flex justify-center items-start">
     <div class="w-[380px] min-h-[700px] overflow-hidden">
-      <HeroCard />
-      <DepositCard />
-      <RewardCard />
+      <div class="relative bg-bgCard shadow-custom-glow  text-center overflow-hidden">
+
+        <header class="absolute top-0 left-0 w-full flex items-center justify-between px-5 py-4 z-10">
+          <img :src="logo" alt="Hero Image" class="object-cover "/>
+          <div v-if="isConnected" class="flex items-center space-x-2">
+            <span class="text-black text-sm  bg-yellow-500  px-3 py-1 rounded-md">{{ shortAddress }}</span>
+            <!--                <button @click="() => disconnect()">-->
+            <!--                    Disconnect-->
+            <!--                </button>-->
+          </div>
+          <button v-else @click="() => connect({ connector: connectors[0] })"
+                  class="bg-primary text-white px-4 py-2 rounded-md">
+            Connect Wallet
+          </button>
+        </header>
+        <div class="mt-16">
+          <img :src="heroImg" alt="Hero Image" class="object-cover w-full h-auto"/>
+          <div class="absolute inset-0 flex flex-col justify-end items-center text-center px-4 pb-6">
+            <p class="text-2xl text-white font-bold w-3/4">
+              Grow your future
+            </p>
+            <p class="text-2xl text-white font-bold w-11/12 mt-1">
+              with USDBIT and enjoy
+            </p>
+            <p class="text-2xl text-white font-bold w-full mt-1">
+              bonuses every single day
+            </p>
+
+            <p class="mt-3 text-xs text-white w-full">
+              1% daily bonus (0.5% withdrawal + 0.5% auto compound)
+            </p>
+
+            <div class="mt-5">
+              <button class="bg-primary text-white px-6 py-2 rounded-md font-semibold">
+                Lets Go!
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!--      <DepositCard >-->
+      <div class="bg-gray-100 p-6 rounded-md w-full ">
+
+        <div class="flex justify-between gap-2 ">
+          <div class="flex-1 bg-gray-50 p-4 rounded-md flex flex-col ">
+            <p class="text-primary text-sm">Total Deposit</p>
+            <p class="text-white text-xl font-bold mt-1">{{ formatDisplayNumber(total_deposit) }} USDT</p>
+          </div>
+
+          <div class="flex-1 bg-gray-50 p-4 rounded-md flex flex-col ">
+            <p class="text-primary text-sm">Total Withdraw</p>
+            <p class="text-white text-xl font-bold mt-1">{{ formatDisplayNumber(total_withdraw) }} USDT</p>
+          </div>
+        </div>
+
+        <div class="flex flex-col mt-2">
+          <div class="flex flex-col mt-2">
+            <label class="text-gray-300 text-sm mb-2" for="amount">Amount</label>
+
+            <div class="relative">
+              <input id="amount" type="number" v-model="amount" placeholder="Enter amount" class="w-full p-3 pr-16 rounded-lg bg-gray-700 text-white
+             focus:outline-none focus:ring-2 focus:ring-primary"/>
+
+              <span class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-300 text-sm font-semibold select-none">
+                        USDT
+                    </span>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2 mt-3">
+            <div v-for="item in quickValues" :key="item" @click="selectValue(item)" :class="[
+                    'px-2.5 py-1 rounded-md  text-xs font-medium cursor-pointer border transition whitespace-nowrap',
+                    selected === item
+                        ? 'bg-gray-600 text-white border-primary'
+                        : 'text-gray-500 border-gray-500 hover:border-primary'
+                ]">
+              {{ item }}
+            </div>
+          </div>
+        </div>
+        <div class="flex items-center justify-end mt-5 mb-2">
+          <img :src="trendUp" alt="trendUp Image" class="object-contain"/>
+          <p class="text-xs text-gray-400">Your Balance {{ formatDisplayNumber(balance) }} USDT</p>
+        </div>
+        <button class="w-full bg-primary text-white font-semibold py-3 rounded-lg hover:opacity-90 transition"
+                v-loading="isLoading"
+                @click="doDeposit">
+          Deposit Now
+        </button>
+      </div>
+      <!--      <DepositCard />-->
+
+      <RewardCard/>
       <div class="text-white p-6 my-6">
         <p class="text-base font-semibold">Welcome to USDBIT</p>
         <p class="text-2xl font-extrabold">
@@ -22,8 +113,8 @@
           next-level staking — where smart investing meets real rewards.
         </p>
       </div>
-      <ReferralCard />
-      <TotalCommissionCard />
+      <ReferralCard/>
+      <TotalCommissionCard/>
       <div class="text-white p-6 my-6">
         <p class="text-base font-semibold">Level System</p>
         <div class="flex gap-2">
@@ -46,11 +137,42 @@
 </template>
 
 <script setup lang="ts">
-import HeroCard from './components/HeroCard.vue'
-import DepositCard from './components/DepositCard.vue'
+import {computed} from 'vue'
+import heroImg from './assets/images/hero.png'
+import logo from './assets/images/logo.svg'
+import {useAccount, useConnect, useDisconnect, useConnectors} from '@wagmi/vue'
+import {useDepositCard} from './composables/useDepositCard.js';
+import trendUp from './assets/images/trend-up.svg';
+
+const {address, isConnected} = useAccount()
+const {connect} = useConnect()
+// const { disconnect } = useDisconnect()
+const connectors = useConnectors()
+
+const shortAddress = computed(() => {
+  if (address.value) {
+    return `${address.value.substring(0, 4)}...${address.value.substring(address.value.length - 6)}`
+  }
+  return ''
+})
+
+
 import RewardCard from './components/RewardCard.vue'
 import ReferralCard from './components/ReferralCard.vue'
 import TotalCommissionCard from './components/TotalCommissionCard.vue'
 import Footer from './components/Footer.vue'
 
+const {
+  total_deposit,
+  total_withdraw,
+  balance,
+  isLoading,
+  amount,
+  selected,
+  quickValues,
+  vLoading,
+  formatDisplayNumber,
+  selectValue,
+  doDeposit,
+} = useDepositCard();
 </script>

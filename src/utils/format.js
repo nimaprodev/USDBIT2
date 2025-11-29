@@ -1,8 +1,18 @@
-export const formatDisplayNumber = (value,  digits = 3) => {
-    if (typeof value === 'undefined' || value === null) return '0';
-    const number = parseFloat(value);
-    if (isNaN(number)) return '0';
-    return new Intl.NumberFormat('en-US', {
-        maximumFractionDigits: digits,
-    }).format(number);
+import {formatEther, parseEther} from 'viem'
+
+export const formatDisplayNumber = (value, digits = 3) => {
+    let numberString = formatEther(value);
+    let parts = numberString.split('.');
+    const integerPart = parts[0];
+    const fractionalPart = parts[1] || '';
+    const formattedIntegerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    const truncatedFractionalPart = fractionalPart.substring(0, digits);
+
+    if (!truncatedFractionalPart) {
+        return formattedIntegerPart;
+    }
+
+    // Join the parts back together
+    return `${formattedIntegerPart}.${truncatedFractionalPart}`;
+
 };
