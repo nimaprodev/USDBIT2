@@ -14,6 +14,8 @@ export function useUser() {
 
     const userInfo = ref(null);
     const total_deposit = ref('0.00');
+    const referralCode = ref(null);
+    const totalCommissions = ref('0.00');
     const total_withdraw = ref('0.00');
     const your_reward = ref('0.00');
 
@@ -75,11 +77,15 @@ export function useUser() {
     watch(userInfoData, (newVal) => {
         userInfo.value = newVal; // Cache the data
         if (newVal) {
-            total_deposit.value = (newVal[9]);
-            total_withdraw.value = (newVal[10]);
+            totalCommissions.value = newVal[3];
+            referralCode.value = newVal[5].toString();
+            total_deposit.value = newVal[9];
+            total_withdraw.value = newVal[10];
         } else {
             total_deposit.value = '0.00';
             total_withdraw.value = '0.00';
+            totalCommissions.value = '0.00';
+            referralCode.value = null;
         }
     });
 
@@ -92,11 +98,13 @@ export function useUser() {
             your_reward.value = '0.00';
             total_deposit.value = '0.00';
             total_withdraw.value = '0.00';
+            referralCode.value = null;
         }
     });
 
     // If there's cached data, use it immediately
     if (userInfo.value) {
+        referralCode.value = parseInt(userInfo.value[1]);
         total_deposit.value = (userInfo.value[9]);
         total_withdraw.value = (userInfo.value[10]);
     }
@@ -106,10 +114,11 @@ export function useUser() {
         total_withdraw,
         your_reward,
         refetchUserInfo,
-        refetchUserInfo,
+        referralCode,
         formatDisplayNumber,
         withdrawReward,
         isWithdrawRewardLoading,
         vLoading,
+        totalCommissions
     };
 }

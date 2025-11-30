@@ -33,11 +33,6 @@
               1% daily bonus (0.5% withdrawal + 0.5% auto compound)
             </p>
 
-            <div class="mt-5">
-              <button class="bg-primary text-white px-6 py-2 rounded-md font-semibold">
-                Lets Go!
-              </button>
-            </div>
           </div>
         </div>
       </div>
@@ -184,11 +179,12 @@
                 </div>
                 <div class="flex flex-col text-left flex-1">
                   <p class="text-primary font-semibold text-sm">Total Commissions</p>
-                  <span class="text-xl font-semibold text-white mt-2 leading-none">123.45 USDT</span>
-                  <a href="#" class="text-white text-xs mt-2 inline-flex items-center">
+                  <span class="text-xl font-semibold text-white mt-2 leading-none">{{ totalCommissions }} USDT</span>
+                  <button v-loading="isClaimingReferralReward" @click="claimReferral" class="text-white bg-secondary text-sm mt-2 w-36 inline-flex items-center rounded px-3 py-1">
+
                     Withdraw Now
                     <img :src="arrowRight" alt="Arrow Right" class="ml-2 align-middle"/>
-                  </a>
+                  </button>
                 </div>
               </div>
             </div>
@@ -242,7 +238,7 @@ import clipboard from './assets/images/clipboard.svg'
 import {useUser} from './composables/useUser.js';
 import totalCommissionImg from './assets/images/total_commissions.png'
 import arrowRight from './assets/images/arrow-right.svg'
-import group from '../assets/images/group.svg'
+import group from './assets/images/group.svg'
 import bitcoinConvert from './assets/images/bitcoin-convert.svg'
 import heroImg from './assets/images/hero.png'
 import logo from './assets/images/logo.svg'
@@ -250,7 +246,6 @@ import trendUp from './assets/images/trend-up.svg';
 
 const {address, isConnected} = useAccount()
 const {connect} = useConnect()
-// const { disconnect } = useDisconnect()
 const connectors = useConnectors()
 
 
@@ -267,29 +262,22 @@ const shortAddress = computed(() => {
   return ''
 })
 
-const {your_reward, withdrawReward, isWithdrawRewardLoading} = useUser();
-const referral_code = computed(() => {
-  // The getUserInfo function returns an array. Assuming referralCode is the 4th element (index 3).
-  // Please adjust the index based on your contract's struct.
-  // if (userInfo && userInfo.value && userInfo.value[3]) {
-  //   return userInfo.value[3];
-  // }
-  return null;
-});
+const {your_reward, withdrawReward, isWithdrawRewardLoading, referralCode, totalCommissions, claimReferral, isClaimingReferralReward} = useUser();
 
 const referralLink = computed(() => {
-  if (referral_code.value) {
-    return `${window.location.protocol}//${window.location.host}/?ref=${referral_code.value}`;
+  if (referralCode.value) {
+    return `${window.location.protocol}//${window.location.host}/?ref=${referralCode.value}`;
   }
   return "";
 });
 
+
 const copyToClipboard = () => {
   if (referralLink.value) {
     navigator.clipboard.writeText(referralLink.value)
-    alert("Copied!")
   }
 }
+
 const {
   total_deposit,
   total_withdraw,
