@@ -179,6 +179,8 @@
                 </div>
                 <div class="flex flex-col text-left flex-1">
                   <p class="text-primary font-semibold text-sm">Total Commissions</p>
+                  00-- {{totalCommissions}}
+                  00-- {{totalCommissions}}
                   <span class="text-xl font-semibold text-white mt-2 leading-none">{{ formatDisplayNumber(totalCommissions) }} USDT</span>
                   <button v-loading="isClaimingReferralReward" @click="claimReferral" class="text-white bg-secondary text-sm mt-2 w-36 inline-flex items-center rounded px-3 py-1">
 

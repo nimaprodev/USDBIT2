@@ -44,6 +44,7 @@ export function useDepositCard() {
         args: [address],
         query: {
             enabled: computed(() => isConnected.value && !!address.value),
+            refetchInterval: 5000,
         }
     });
 

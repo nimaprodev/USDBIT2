@@ -96,9 +96,9 @@ export function useUser() {
         if (newVal) {
             userInfo.value = newVal;
             referralCode.value = newVal[1].toString();
-            totalCommissions.value = (newVal[4]);
-            total_deposit.value = (newVal[9]);
-            total_withdraw.value = (newVal[10]);
+            totalCommissions.value = newVal[3];
+            total_deposit.value =newVal[9];
+            total_withdraw.value = newVal[10];
         }
     })
 
