@@ -146,33 +146,69 @@
           next-level staking — where smart investing meets real rewards.
         </p>
       </div>
-<!--      ReferralCard -->
+      <!--      ReferralCard -->
       <div class="bg-gray-100 p-6 w-full">
-        <img :src="referralImg" alt="referral Image" class="object-cover mb-4" />
+        <img :src="referralImg" alt="referral Image" class="object-cover mb-4"/>
 
         <div class="flex items-center text-2xl font-extrabold gap-2 mb-4">
-            <span class="text-white">Your</span>
-            <span class="text-primary">referral link</span>
+          <span class="text-white">Your</span>
+          <span class="text-primary">referral link</span>
         </div>
 
         <p class="text-justify text-base leading-loose text-gray-400 mb-6">
-            Share your unique link and earn rewards every time someone joins through you. Invite friends, build your
-            network,
-            and grow together—success is better when shared.
+          Share your unique link and earn rewards every time someone joins through you. Invite friends, build your
+          network,
+          and grow together—success is better when shared.
         </p>
 
         <div class="relative w-full mb-10">
-            <input readonly :value="referralLink"
-                class="w-full pl-4 py-3 rounded-xl bg-gray-50 text-white focus:outline-none focus:ring-2 focus:ring-primary" />
-            <button
-                class="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-xl bg-primary flex items-center justify-center"
-                @click="copyToClipboard">
-                <img :src="clipboard" alt="clipboard" class="w-5 h-5" />
-            </button>
+          <input readonly :value="referralLink"
+                 class="w-full pl-4 py-3 rounded-xl bg-gray-50 text-white focus:outline-none focus:ring-2 focus:ring-primary"/>
+          <button
+              class="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-xl bg-primary flex items-center justify-center"
+              @click="copyToClipboard">
+            <img :src="clipboard" alt="clipboard" class="w-5 h-5"/>
+          </button>
         </div>
-    </div>
-<!--      <ReferralCard/>-->
-      <TotalCommissionCard/>
+      </div>
+      <!--      end Referral Card    -->
+      <!--      <TotalCommissionCard>-->
+      <div class="w-full text-center">
+        <div class="relative w-full pb-20">
+          <img :src="totalCommissionImg" alt="Total Commissions" class="object-cover w-full h-auto"/>
+          <div class="absolute inset-x-0 bottom-0 px-4 ">
+            <div class="bg-gray-100 p-6 rounded-md w-full  mx-auto ">
+              <div class="flex items-center gap-4">
+                <div class="w-14 h-14 rounded-md bg-primary flex items-center justify-center">
+                  <img :src="group" alt="Group Icon" class="object-contain"/>
+                </div>
+                <div class="flex flex-col text-left flex-1">
+                  <p class="text-primary font-semibold text-sm">Total Commissions</p>
+                  <span class="text-xl font-semibold text-white mt-2 leading-none">123.45 USDT</span>
+                  <a href="#" class="text-white text-xs mt-2 inline-flex items-center">
+                    Withdraw Now
+                    <img :src="arrowRight" alt="Arrow Right" class="ml-2 align-middle"/>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-2 w-full max-w-md mx-auto mt-4 px-4">
+          <div v-for="level in levels" :key="level.name"
+               class="bg-gray-800 p-4 rounded-md w-full flex items-center gap-4">
+            <div class="w-10 h-10 rounded-md bg-primary flex items-center justify-center">
+              <img :src="level.icon" alt="Level Icon" class="w-6 h-6 object-contain"/>
+            </div>
+            <div class="flex flex-col text-left">
+              <p class="text-primary font-bold text-sm">{{ level.name }}</p>
+              <span class="text-xl font-semibold text-white ">{{ level.percent }}%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--      </TotalCommissionCard>-->
       <div class="text-white p-6 my-6">
         <p class="text-base font-semibold">Level System</p>
         <div class="flex gap-2">
@@ -196,25 +232,34 @@
 
 <script setup lang="ts">
 import {computed} from 'vue'
-import heroImg from './assets/images/hero.png'
-import logo from './assets/images/logo.svg'
 import {useAccount, useConnect, useDisconnect, useConnectors} from '@wagmi/vue'
 import {useDepositCard} from './composables/useDepositCard.js';
-import trendUp from './assets/images/trend-up.svg';
-import TotalCommissionCard from './components/TotalCommissionCard.vue'
 import Footer from './components/Footer.vue'
 import rewardImg from "./assets/images/reward.png";
 import walletMoney from "./assets/images/wallet-money.svg";
-import arrowRight from "./assets/images/arrow-right.svg";
 import referralImg from './assets/images/referral.png'
 import clipboard from './assets/images/clipboard.svg'
-import { useUser } from './composables/useUser.js';
+import {useUser} from './composables/useUser.js';
+import totalCommissionImg from './assets/images/total_commissions.png'
+import arrowRight from './assets/images/arrow-right.svg'
+import group from '../assets/images/group.svg'
+import bitcoinConvert from './assets/images/bitcoin-convert.svg'
+import heroImg from './assets/images/hero.png'
+import logo from './assets/images/logo.svg'
+import trendUp from './assets/images/trend-up.svg';
 
 const {address, isConnected} = useAccount()
 const {connect} = useConnect()
 // const { disconnect } = useDisconnect()
 const connectors = useConnectors()
 
+
+const levels = [
+  {name: 'Level 1', percent: '5', icon: bitcoinConvert},
+  {name: 'Level 2', percent: '5', icon: bitcoinConvert},
+  {name: 'Level 3', percent: '5', icon: bitcoinConvert},
+  {name: 'Level 4', percent: '5', icon: bitcoinConvert},
+]
 const shortAddress = computed(() => {
   if (address.value) {
     return `${address.value.substring(0, 4)}...${address.value.substring(address.value.length - 6)}`
@@ -240,10 +285,10 @@ const referralLink = computed(() => {
 });
 
 const copyToClipboard = () => {
-    if (referralLink.value) {
-        navigator.clipboard.writeText(referralLink.value)
+  if (referralLink.value) {
+    navigator.clipboard.writeText(referralLink.value)
     alert("Copied!")
-}
+  }
 }
 const {
   total_deposit,
