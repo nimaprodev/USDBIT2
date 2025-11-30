@@ -179,7 +179,7 @@
                 </div>
                 <div class="flex flex-col text-left flex-1">
                   <p class="text-primary font-semibold text-sm">Total Commissions</p>
-                  <span class="text-xl font-semibold text-white mt-2 leading-none">{{ totalCommissions }} USDT</span>
+                  <span class="text-xl font-semibold text-white mt-2 leading-none">{{ formatDisplayNumber(totalCommissions) }} USDT</span>
                   <button v-loading="isClaimingReferralReward" @click="claimReferral" class="text-white bg-secondary text-sm mt-2 w-36 inline-flex items-center rounded px-3 py-1">
 
                     Withdraw Now
@@ -248,6 +248,7 @@ const {address, isConnected} = useAccount()
 const {connect} = useConnect()
 const connectors = useConnectors()
 
+const {your_reward, withdrawReward, isWithdrawRewardLoading, referralCode, totalCommissions, claimReferral, isClaimingReferralReward} = useUser();
 
 const levels = [
   {name: 'Level 1', percent: '5', icon: bitcoinConvert},
@@ -262,7 +263,6 @@ const shortAddress = computed(() => {
   return ''
 })
 
-const {your_reward, withdrawReward, isWithdrawRewardLoading, referralCode, totalCommissions, claimReferral, isClaimingReferralReward} = useUser();
 
 const referralLink = computed(() => {
   if (referralCode.value) {

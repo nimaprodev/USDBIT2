@@ -63,10 +63,10 @@ export function useDepositCard() {
     const selectValue = (value) => {
         selected.value = value;
         if (value === "MAX") {
-            amount.value = balance.value;
+            amount.value = parseFloat(balance.value)  / 10**18;
         } else if (value.endsWith("%")) {
             const percentage = parseInt(value);
-            const calculatedAmount = (parseFloat(balance.value) * percentage / 100);
+            const calculatedAmount = (parseFloat(balance.value) * percentage / 100) / 10**18;
             amount.value = calculatedAmount;
         }
     };
@@ -79,6 +79,12 @@ export function useDepositCard() {
 
         if (parseFloat(amount.value) < 50) {
             $toast.error("Minimum deposit is 50 USDT.");
+            return;
+        }
+
+
+        if (parseFloat(amount.value) > parseFloat(balance.value)) {
+            $toast.error("Insufficient balance.");
             return;
         }
 

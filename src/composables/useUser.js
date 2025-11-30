@@ -1,10 +1,9 @@
-
 import {ref, computed, watch} from 'vue';
-import {useAccount, useReadContract, useWriteContract} from '@wagmi/vue';
+import {useAccount, useReadContract, useWaitForTransactionReceipt, useWriteContract} from '@wagmi/vue';
 import {usdbitABI} from '../contracts/abi';
 import {usdbitContractAddress} from '../contracts/usdbit';
-import { formatDisplayNumber } from '../utils/format.js';
-import { useToast } from 'vue-toast-notification';
+import {formatDisplayNumber} from '../utils/format.js';
+import {useToast} from 'vue-toast-notification';
 import loadingDirective from '../directives/loading.js';
 
 export function useUser() {
@@ -20,8 +19,10 @@ export function useUser() {
     const your_reward = ref('0.00');
 
     const {writeContractAsync: withdrawRewardAsync} = useWriteContract();
+    const {writeContractAsync: claimReferralAsync} = useWriteContract();
 
     const isWithdrawRewardLoading = ref(false);
+    const isClaimingReferralReward = ref(false);
 
     const withdrawReward = async () => {
         if (parseFloat(your_reward.value) <= 0) {
@@ -70,24 +71,11 @@ export function useUser() {
         }
     });
 
+
     watch(totalProfitData, (newVal) => {
         your_reward.value = (newVal);
     });
 
-    watch(userInfoData, (newVal) => {
-        userInfo.value = newVal; // Cache the data
-        if (newVal) {
-            totalCommissions.value = newVal[3];
-            referralCode.value = newVal[5].toString();
-            total_deposit.value = newVal[9];
-            total_withdraw.value = newVal[10];
-        } else {
-            total_deposit.value = '0.00';
-            total_withdraw.value = '0.00';
-            totalCommissions.value = '0.00';
-            referralCode.value = null;
-        }
-    });
 
     watch(isConnected, (connected) => {
         if (connected) {
@@ -99,15 +87,44 @@ export function useUser() {
             total_deposit.value = '0.00';
             total_withdraw.value = '0.00';
             referralCode.value = null;
+            totalCommissions.value = '0.00';
         }
     });
 
-    // If there's cached data, use it immediately
-    if (userInfo.value) {
-        referralCode.value = parseInt(userInfo.value[1]);
-        total_deposit.value = (userInfo.value[9]);
-        total_withdraw.value = (userInfo.value[10]);
-    }
+
+    watch(userInfoData, (newVal) => {
+        if (newVal) {
+            userInfo.value = newVal;
+            referralCode.value = newVal[1].toString();
+            totalCommissions.value = (newVal[4]);
+            total_deposit.value = (newVal[9]);
+            total_withdraw.value = (newVal[10]);
+        }
+    })
+
+    const claimReferral = async () => {
+        if (parseFloat(totalCommissions.value) <= 0) {
+            toast.warning('No referral rewards to claim');
+            return;
+        }
+        isClaimingReferralReward.value = true;
+        try {
+            toast.info('Claiming referral rewards...');
+            await claimReferralAsync({
+                abi: usdbitABI,
+                address: usdbitContractAddress,
+                functionName: 'claimReferralRewards',
+            });
+
+            toast.success('Referral rewards claimed successfully!');
+            refetchUserInfo();
+        } catch (error) {
+            console.error("Claiming referral rewards failed:", error);
+            toast.error(error.shortMessage || "Claiming failed. Please try again.");
+        } finally {
+            isClaimingReferralReward.value = false;
+        }
+    };
 
     return {
         total_deposit,
@@ -119,6 +136,8 @@ export function useUser() {
         withdrawReward,
         isWithdrawRewardLoading,
         vLoading,
-        totalCommissions
+        totalCommissions,
+        claimReferral,
+        isClaimingReferralReward
     };
 }
