@@ -78,8 +78,8 @@ export function useDepositCard() {
             return;
         }
 
-        if (parseFloat(amount.value) < 50) {
-            $toast.error("Minimum deposit is 50 USDT.");
+        if (parseFloat(amount.value) < 20) {
+            $toast.error("Minimum deposit is 20 USDT.");
             return;
         }
 
