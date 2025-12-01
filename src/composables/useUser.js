@@ -93,6 +93,7 @@ export function useUser() {
 
 
     watch(userInfoData, (newVal) => {
+        debugger;
         if (newVal) {
             userInfo.value = newVal;
             referralCode.value = newVal[1].toString();
