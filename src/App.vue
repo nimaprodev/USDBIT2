@@ -15,6 +15,19 @@
                   class="bg-primary text-white px-4 py-2 rounded-md">
             Connect Wallet
           </button>
+
+
+                    <button
+            v-for="(c, i) in connectorList"
+            :key="c.id ?? i"
+            @click="() => connectTo(c)"
+            :disabled="!c.ready"
+            class="bg-primary text-white px-4 py-2 rounded-md"
+          >
+             {{ c.name ?? c.id ?? 'Connector' }}
+            <span v-if="!c.ready"> (not ready)</span>
+          </button>
+
         </header>
         <div class="mt-16">
           <img :src="heroImg" alt="Hero Image" class="object-cover w-full h-auto"/>
@@ -205,7 +218,7 @@ Join USDBIT today and experience smart, reliable, and reward-driven investing �
 
 <script setup lang="ts">
 import {computed} from 'vue'
-import {useAccount, useConnect, useDisconnect, useConnectors} from '@wagmi/vue'
+import { useAccount, useConnect, useConnectors } from '@wagmi/vue'
 import {useDepositCard} from './composables/useDepositCard.js';
 import Footer from './components/Footer.vue'
 import rewardImg from "./assets/images/reward.png";
@@ -221,11 +234,41 @@ import heroImg from './assets/images/hero.png'
 import logo from './assets/images/logo.svg'
 import trendUp from './assets/images/trend-up.svg';
 
-const {address, isConnected} = useAccount()
-const {connect} = useConnect()
+const { address, isConnected } = useAccount()
+const { connect } = useConnect()
 const connectors = useConnectors()
+const connectorList = computed(() => connectors.value ?? [])
 
 const {your_reward, withdrawReward, isWithdrawRewardLoading, referralCode, totalCommissions, claimReferral, isClaimingReferralReward} = useUser();
+function findWalletConnect() {
+  return connectorList.value.find(c => {
+    const id = (c.id || '').toString().toLowerCase()
+    const name = (c.name || '').toString().toLowerCase()
+    return id.includes('walletconnect') || name.includes('walletconnect')
+  }) ?? null
+}
+function connectTo(connector) {
+  // اگر connector نال یا undefined فرستاده شد، سعی می‌کنیم WalletConnect را استفاده کنیم
+  if (!connector) {
+    const wc = findWalletConnect()
+    if (!wc) {
+      console.error('هیچ کانکتور مناسبی پیدا نشد', connectorList.value)
+      // اینجا می‌تونید به کاربر پیام UI بدید
+      return
+    }
+    connector = wc
+  }
+
+  if (!connector.ready) {
+    console.warn('کانکتور هنوز آماده نیست:', connector)
+    // ممکنه بخوایم به کاربر پیام بدیم یا همچنان تلاش کنیم
+  }
+
+  // لاگ برای دیباگ
+  console.log('connecting with connector:', connector.id ?? connector.name)
+  connect({ connector })
+}
+
 
 const levels = [
   {name: 'Level 1', percent: '5', icon: bitcoinConvert},
