@@ -11,22 +11,23 @@
             <!--                    Disconnect-->
             <!--                </button>-->
           </div>
-          <button v-else @click="() => connect({ connector: connectors[0] })"
-                  class="bg-primary text-white px-4 py-2 rounded-md">
-            Connect Wallet
-          </button>
+<!--          <button v-else @click="() => connect({ connector: connectors[0] })"-->
+<!--                  class="bg-primary text-white px-4 py-2 rounded-md">-->
+<!--            Connect Wallet-->
+<!--          </button>-->
 
 
-                    <button
-            v-for="(c, i) in connectorList"
-            :key="c.id ?? i"
-            @click="() => connectTo(c)"
-            :disabled="!c.ready"
-            class="bg-primary text-white px-4 py-2 rounded-md"
-          >
-             {{ c.name ?? c.id ?? 'Connector' }}
-            <span v-if="!c.ready"> (not ready)</span>
-          </button>
+          <div v-else class="flex flex-col gap-2">
+            <button
+                v-for="(c, i) in connectorList"
+                :key="c.id ?? i"
+                @click="() => connectTo(c)"
+                class="bg-primary text-white px-4 py-2 rounded-md "
+            >
+              {{ c.name ?? c.id ?? 'Connector' }}
+              <!--            <span v-if="!c.ready"> (not ready)</span>-->
+            </button>
+          </div>
 
         </header>
         <div class="mt-16">
