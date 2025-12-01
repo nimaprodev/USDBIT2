@@ -5,15 +5,13 @@
 
         <header class="absolute top-0 left-0 w-full flex items-center justify-between px-5 py-4 z-10">
           <img :src="logo" alt="Hero Image" class="object-cover "/>
+          <p>sss --- {{isConnected}}</p>
           <div v-if="isConnected" class="flex items-center space-x-2">
-            <span class="text-black text-sm  bg-yellow-500  px-3 py-1 rounded-md">{{ shortAddress }}</span>
-            <!--                <button @click="() => disconnect()">-->
-            <!--                    Disconnect-->
-            <!--                </button>-->
+            <span class="text-black text-sm  bg-yellow-500  px-3 py-1 rounded-md">{{ shortAddress() }}</span>
           </div>
           <div v-else class="flex flex-col gap-2">
             <button
-                @click="() => connectTo(injectedConnector)"
+                @click="connectWallet"
                 class="bg-primary text-white px-4 py-2 rounded-md"
             >
               Connect Wallet
@@ -210,116 +208,31 @@
         </div>
       </div>
       <!--      </TotalCommissionCard>-->
-      <Footer/>
+      <div class="relative text-center overflow-hidden">
+        <img :src="footer" alt="footer" class="object-cover w-full h-auto" />
+
+        <div class="absolute inset-0 flex flex-col  items-center text-center px-4 pb-6 mt-10">
+          <img :src="footerLogo" alt="footer logo" />
+          <p class="text-justify mt-5 text-base text-gray-500">
+            USDBIT runs on a transparent USDT smart contract that rewards you with fixed daily profits for 120 days.<br />
+            Your capital stays securely locked while earnings are paid automatically.<br />
+            Our 4-level referral system delivers instant USDT bonuses.<br />
+            USDBIT — smart, stable, and blockchain-driven income.<br />
+
+
+
+          </p>
+          <a href="t.me/usdbit_team" class="text-gray-200 px-4 py-2 rounded-lg border border-grey-300 mt-6 flex items-center gap-2">
+            <img :src="telegram" alt="telegram" />
+            Telegram Channel
+          </a>
+        </div>
+      </div>
     </div>
   </div>
 </template>
+<script>
+import app from './App.js'
 
-<script setup lang="ts">
-import {computed} from 'vue'
-import {useAccount, useConnect, useConnectors, useSwitchChain, useChainId} from '@wagmi/vue'
-import {useDepositCard} from './composables/useDepositCard.js';
-import Footer from './components/Footer.vue'
-import rewardImg from "./assets/images/reward.png";
-import walletMoney from "./assets/images/wallet-money.svg";
-import referralImg from './assets/images/referral.png'
-import clipboard from './assets/images/clipboard.svg'
-import {useUser} from './composables/useUser.js';
-import totalCommissionImg from './assets/images/total_commissions.png'
-import arrowRight from './assets/images/arrow-right.svg'
-import group from './assets/images/group.svg'
-import bitcoinConvert from './assets/images/bitcoin-convert.svg'
-import heroImg from './assets/images/hero.png'
-import logo from './assets/images/logo.svg'
-import trendUp from './assets/images/trend-up.svg';
-import {bsc} from "viem/chains";
-
-const {address, isConnected, chainId} = useAccount()
-const {connect} = useConnect()
-const connectors = useConnectors()
-const connectorList = computed(() => connectors.value ?? [])
-const {switchChain} = useSwitchChain()
-const chain_Id = useChainId()
-
-
-const {
-  your_reward,
-  withdrawReward,
-  isWithdrawRewardLoading,
-  referralCode,
-  totalCommissions,
-  claimReferral,
-  isClaimingReferralReward
-} = useUser();
-
-const injectedConnector = computed(() =>
-    connectorList.value.find(c =>
-        (c.id || '').toLowerCase().includes('injected') ||
-        (c.name || '').toLowerCase().includes('meta') // متامسک یا injected
-    ) ?? null
-)
-
-function findWalletConnect() {
-  return connectorList.value.find(c => {
-    const id = (c.id || '').toString().toLowerCase()
-    const name = (c.name || '').toString().toLowerCase()
-    return id.includes('walletconnect') || name.includes('walletconnect')
-  }) ?? null
-}
-
-function connectTo(connector) {
-  if (!connector) {
-    const wc = findWalletConnect()
-    connector = wc
-  } else {
-    $toast.error('No injected wallet provider found (window.ethereum). Please connect a wallet (MetaMask).')
-  }
-
-  connect({connector})
-
-}
-
-
-const levels = [
-  {name: 'Level 1', percent: '5', icon: bitcoinConvert},
-  {name: 'Level 2', percent: '3', icon: bitcoinConvert},
-  {name: 'Level 3', percent: '2', icon: bitcoinConvert},
-  {name: 'Level 4', percent: '1', icon: bitcoinConvert},
-]
-const shortAddress = computed(() => {
-  if (address.value) {
-    return `${address.value.substring(0, 4)}...${address.value.substring(address.value.length - 6)}`
-  }
-  return ''
-})
-
-
-const referralLink = computed(() => {
-  if (referralCode.value) {
-    return `${window.location.protocol}//${window.location.host}/?ref=${referralCode.value}`;
-  }
-  return "";
-});
-
-
-const copyToClipboard = () => {
-  if (referralLink.value) {
-    navigator.clipboard.writeText(referralLink.value)
-  }
-}
-
-const {
-  total_deposit,
-  total_withdraw,
-  balance,
-  isLoading,
-  amount,
-  selected,
-  quickValues,
-  vLoading,
-  formatDisplayNumber,
-  selectValue,
-  doDeposit,
-  $toast,
-} = useDepositCard();
+export default app
 </script>
