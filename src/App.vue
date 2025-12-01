@@ -11,30 +11,22 @@
             <!--                    Disconnect-->
             <!--                </button>-->
           </div>
-<!--          <button v-else @click="() => connect({ connector: connectors[0] })"-->
-<!--                  class="bg-primary text-white px-4 py-2 rounded-md">-->
-<!--            Connect Wallet-->
-<!--          </button>-->
-
-
           <div v-else class="flex flex-col gap-2">
             <button
-                v-for="(c, i) in connectorList"
-                :key="c.id ?? i"
-                @click="() => connectTo(c)"
-                class="bg-primary text-white px-4 py-2 rounded-md "
+                @click="() => connectTo(injectedConnector)"
+                class="bg-primary text-white px-4 py-2 rounded-md"
             >
-              {{ c.name ?? c.id ?? 'Connector' }}
-              <!--            <span v-if="!c.ready"> (not ready)</span>-->
+              Connect Wallet
             </button>
           </div>
+
 
         </header>
         <div class="mt-16">
           <img :src="heroImg" alt="Hero Image" class="object-cover w-full h-auto"/>
           <div class="absolute inset-0 flex flex-col justify-end items-center text-center px-4 pb-6">
             <p class="text-2xl text-white font-bold w-3/4">
-Grow your future with USDBIT and enjoy bonuses every single day
+              Grow your future with USDBIT and enjoy bonuses every single day
             </p>
             <p class="mt-3 text-xs text-white w-full">
               2.5% daily bonus and 4 levels Referral marketing!
@@ -139,11 +131,14 @@ Grow your future with USDBIT and enjoy bonuses every single day
           Experience
         </p>
         <p class="text-justify mt-4 text-base leading-loose text-gray-400">
-Welcome to USDBIT – your trusted gateway to stable USDT-based growth!<br/>
-At USDBIT, you earn a solid 3% daily ROI for 120 days — starting with only 20 USDT.<br/>
-Our automated smart-contract system locks your capital securely and rewards you with transparent daily profits.<br/>
-Plus, with our 4-level referral program, you can boost your earnings: 5% – 3% – 2% – 1% paid instantly in USDT.<br/>
-Join USDBIT today and experience smart, reliable, and reward-driven investing — powered fully by blockchain.<br/>
+          Welcome to USDBIT – your trusted gateway to stable USDT-based growth!<br/>
+          At USDBIT, you earn a solid 3% daily ROI for 120 days — starting with only 20 USDT.<br/>
+          Our automated smart-contract system locks your capital securely and rewards you with transparent daily
+          profits.<br/>
+          Plus, with our 4-level referral program, you can boost your earnings: 5% – 3% – 2% – 1% paid instantly in
+          USDT.<br/>
+          Join USDBIT today and experience smart, reliable, and reward-driven investing — powered fully by
+          blockchain.<br/>
 
         </p>
       </div>
@@ -185,9 +180,12 @@ Join USDBIT today and experience smart, reliable, and reward-driven investing �
                 </div>
                 <div class="flex flex-col text-left flex-1">
                   <p class="text-primary font-semibold text-sm">Total Commissions</p>
-                   {{totalCommissions}}
-                  <span class="text-xl font-semibold text-white mt-2 leading-none">{{ formatDisplayNumber(totalCommissions) }} USDT</span>
-                  <button v-loading="isClaimingReferralReward" @click="claimReferral" class="text-white bg-secondary text-sm mt-2 w-36 inline-flex items-center rounded px-3 py-1">
+                  {{ totalCommissions }}
+                  <span class="text-xl font-semibold text-white mt-2 leading-none">{{
+                      formatDisplayNumber(totalCommissions)
+                    }} USDT</span>
+                  <button v-loading="isClaimingReferralReward" @click="claimReferral"
+                          class="text-white bg-secondary text-sm mt-2 w-36 inline-flex items-center rounded px-3 py-1">
 
                     Withdraw Now
                     <img :src="arrowRight" alt="Arrow Right" class="ml-2 align-middle"/>
@@ -219,7 +217,7 @@ Join USDBIT today and experience smart, reliable, and reward-driven investing �
 
 <script setup lang="ts">
 import {computed} from 'vue'
-import { useAccount, useConnect, useConnectors } from '@wagmi/vue'
+import {useAccount, useConnect, useConnectors, useSwitchChain, useChainId} from '@wagmi/vue'
 import {useDepositCard} from './composables/useDepositCard.js';
 import Footer from './components/Footer.vue'
 import rewardImg from "./assets/images/reward.png";
@@ -234,13 +232,33 @@ import bitcoinConvert from './assets/images/bitcoin-convert.svg'
 import heroImg from './assets/images/hero.png'
 import logo from './assets/images/logo.svg'
 import trendUp from './assets/images/trend-up.svg';
+import {bsc} from "viem/chains";
 
-const { address, isConnected } = useAccount()
-const { connect } = useConnect()
+const {address, isConnected, chainId} = useAccount()
+const {connect} = useConnect()
 const connectors = useConnectors()
 const connectorList = computed(() => connectors.value ?? [])
+const {switchChain} = useSwitchChain()
+const chain_Id = useChainId()
 
-const {your_reward, withdrawReward, isWithdrawRewardLoading, referralCode, totalCommissions, claimReferral, isClaimingReferralReward} = useUser();
+
+const {
+  your_reward,
+  withdrawReward,
+  isWithdrawRewardLoading,
+  referralCode,
+  totalCommissions,
+  claimReferral,
+  isClaimingReferralReward
+} = useUser();
+
+const injectedConnector = computed(() =>
+    connectorList.value.find(c =>
+        (c.id || '').toLowerCase().includes('injected') ||
+        (c.name || '').toLowerCase().includes('meta') // متامسک یا injected
+    ) ?? null
+)
+
 function findWalletConnect() {
   return connectorList.value.find(c => {
     const id = (c.id || '').toString().toLowerCase()
@@ -248,26 +266,17 @@ function findWalletConnect() {
     return id.includes('walletconnect') || name.includes('walletconnect')
   }) ?? null
 }
+
 function connectTo(connector) {
-  // اگر connector نال یا undefined فرستاده شد، سعی می‌کنیم WalletConnect را استفاده کنیم
   if (!connector) {
     const wc = findWalletConnect()
-    if (!wc) {
-      console.error('هیچ کانکتور مناسبی پیدا نشد', connectorList.value)
-      // اینجا می‌تونید به کاربر پیام UI بدید
-      return
-    }
     connector = wc
-  }
+  } else {
+    $toast.error('No injected wallet provider found (window.ethereum). Please connect a wallet (MetaMask).')
 
-  if (!connector.ready) {
-    console.warn('کانکتور هنوز آماده نیست:', connector)
-    // ممکنه بخوایم به کاربر پیام بدیم یا همچنان تلاش کنیم
-  }
 
-  // لاگ برای دیباگ
-  console.log('connecting with connector:', connector.id ?? connector.name)
-  connect({ connector })
+  connect({connector})
+
 }
 
 
@@ -311,5 +320,6 @@ const {
   formatDisplayNumber,
   selectValue,
   doDeposit,
+  $toast,
 } = useDepositCard();
 </script>

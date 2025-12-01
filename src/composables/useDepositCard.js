@@ -136,6 +136,7 @@ export function useDepositCard() {
         isLoading,
         amount,
         selected,
+        $toast,
         quickValues,
         vLoading,
         formatDisplayNumber,
