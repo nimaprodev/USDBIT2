@@ -18,7 +18,7 @@ export function useDepositCard() {
     const { total_deposit, total_withdraw, refetchUserInfo } = useUser();
     const balance = ref('0.00');
     const isLoading = ref(false);
-    const amount = ref('');
+    const amount = ref('20');
     const selected = ref(null);
     const quickValues = ["10%", "25%", "50%", "75%", "MAX"];
 

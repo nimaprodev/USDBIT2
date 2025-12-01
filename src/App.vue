@@ -47,7 +47,7 @@ Grow your future with USDBIT and enjoy bonuses every single day
 
         <div class="flex flex-col mt-2">
           <div class="flex flex-col mt-2">
-            <label class="text-gray-300 text-sm mb-2" for="amount">Amount</label>
+            <label class="text-gray-300 text-sm mb-2" for="amount">Amount (min 20 USDT)</label>
 
             <div class="relative">
               <input id="amount" type="number" v-model="amount" placeholder="Enter amount" class="w-full p-3 pr-16 rounded-lg bg-gray-700 text-white
