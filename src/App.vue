@@ -273,7 +273,7 @@ function connectTo(connector) {
     connector = wc
   } else {
     $toast.error('No injected wallet provider found (window.ethereum). Please connect a wallet (MetaMask).')
-
+  }
 
   connect({connector})
 
