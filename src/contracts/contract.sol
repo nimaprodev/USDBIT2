@@ -13,7 +13,7 @@ contract USDBIT {
     uint256 constant CONTRACT_DURATION = 120 days;
     uint256 constant MIN_INVEST = 20 ether;
 
-    uint256 private dailyROI = 300;
+    uint256 private dailyROI = 250;
 
     address private feeReceiver1;
     address private feeReceiver2;
@@ -56,12 +56,11 @@ contract USDBIT {
 
     constructor() {
         usdtToken = IERC20(0x472a11E85c992fECC4C36B3B417935821F68F753);
-//0x0000000000000000000000000000000000001000
-        feeReceivers.push(0x7446372f9fA49601a2540ff70235D6F9945eA5FD); //kenan
-        feeReceivers.push(0x79073b2B4776BAC533f0179649D858D9bD97da11); //l1
-        feeReceivers.push(0x8Af7136A6CDfD643Fe626Bd50b31c0Bb05703502); //2
-        feeReceivers.push(0x39524E0b7D063E3dF717eAB4B84b4Aa44A50C22d);  //sa
-        feeReceivers.push(0x39524E0b7D063E3dF717eAB4B84b4Aa44A50C22d); //im
+        feeReceivers.push(0x7446372f9fA49601a2540ff70235D6F9945eA5FD);
+        feeReceivers.push(0x79073b2B4776BAC533f0179649D858D9bD97da11);
+        feeReceivers.push(0x8Af7136A6CDfD643Fe626Bd50b31c0Bb05703502);
+        feeReceivers.push(0x39524E0b7D063E3dF717eAB4B84b4Aa44A50C22d);
+        feeReceivers.push(0x31195D3FE89826D56612bF91b9B77986e513f9eb);
 
         _owner = msg.sender;
     }
@@ -157,7 +156,8 @@ contract USDBIT {
         uint256 referrerCode,
         address referrer,
         uint256 totalDeposit,
-        uint256 totalWithdraw, uint256 totalBonus,
+        uint256 totalWithdraw,
+        uint256 totalBonus,
         uint256 totalReferralRewards
     ) {
         User storage user = users[userAddr];

@@ -35,7 +35,7 @@ export function useUser() {
             await withdrawRewardAsync({
                 abi: usdbitABI,
                 address: usdbitContractAddress,
-                functionName: 'withdrawPlanProfit',
+                functionName: 'withdrawProfit',
             });
             toast.success('Reward withdrawn successfully!');
             refetchUserInfo();
@@ -51,7 +51,7 @@ export function useUser() {
     const {data: totalProfitData, refetch: refetchTotalProfit} = useReadContract({
         abi: usdbitABI,
         address: usdbitContractAddress,
-        functionName: 'getTotalProfit',
+        functionName: 'getUserDividends',
         args: [address],
         query: {
             enabled: computed(() => isConnected.value && !!address.value),
@@ -93,13 +93,12 @@ export function useUser() {
 
 
     watch(userInfoData, (newVal) => {
-        debugger;
         if (newVal) {
             userInfo.value = newVal;
             referralCode.value = newVal[1].toString();
-            totalCommissions.value = newVal[3];
-            total_deposit.value =newVal[9];
-            total_withdraw.value = newVal[10];
+            total_deposit.value = newVal[4];
+            total_withdraw.value = newVal[5];
+            totalCommissions.value = newVal[6];
         }
     })
 

@@ -1,12 +1,10 @@
 import { createConfig, createStorage, http } from '@wagmi/vue'
-import { bsc, bscTestnet } from '@wagmi/vue/chains'
+import { bsc } from '@wagmi/vue/chains'
 
 export const config = createConfig({
-  // chains: [bsc, bscTestnet],
-  chains: [bscTestnet],
+  chains: [bsc],
   storage: createStorage({ storage: localStorage, key: 'vite-vue' }),
   transports: {
-    // [bsc.id]: http(),
-    [bscTestnet.id]: http(),
+    [bsc.id]: http(),
   },
 })

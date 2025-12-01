@@ -20,17 +20,10 @@
           <img :src="heroImg" alt="Hero Image" class="object-cover w-full h-auto"/>
           <div class="absolute inset-0 flex flex-col justify-end items-center text-center px-4 pb-6">
             <p class="text-2xl text-white font-bold w-3/4">
-              Grow your future
+Grow your future with USDBIT and enjoy bonuses every single day
             </p>
-            <p class="text-2xl text-white font-bold w-11/12 mt-1">
-              with USDBIT and enjoy
-            </p>
-            <p class="text-2xl text-white font-bold w-full mt-1">
-              bonuses every single day
-            </p>
-
             <p class="mt-3 text-xs text-white w-full">
-              1% daily bonus (0.5% withdrawal + 0.5% auto compound)
+              2.5% daily bonus and 4 levels Referral marketing!
             </p>
 
           </div>
@@ -132,13 +125,12 @@
           Experience
         </p>
         <p class="text-justify mt-4 text-base leading-loose text-gray-400">
-          Welcome to usdbit – your ultimate gateway to powerful Polygon-based investments! At PolyCash, we offer a
-          high-yield opportunity with 3.5% daily ROI for 100 days — starting with just 10 POL. Our smart system ensures
-          maximum growth through transparent, reliable, and automated returns. Plus, with our 4-level referral program,
-          you
-          earn even more by inviting others: 5% - 3% - 2% - 1% — directly to your wallet. Join PolyCash today and
-          experience
-          next-level staking — where smart investing meets real rewards.
+Welcome to USDBIT – your trusted gateway to stable USDT-based growth!<br/>
+At USDBIT, you earn a solid 3% daily ROI for 120 days — starting with only 20 USDT.<br/>
+Our automated smart-contract system locks your capital securely and rewards you with transparent daily profits.<br/>
+Plus, with our 4-level referral program, you can boost your earnings: 5% – 3% – 2% – 1% paid instantly in USDT.<br/>
+Join USDBIT today and experience smart, reliable, and reward-driven investing — powered fully by blockchain.<br/>
+
         </p>
       </div>
       <!--      ReferralCard -->
@@ -206,22 +198,6 @@
         </div>
       </div>
       <!--      </TotalCommissionCard>-->
-      <div class="text-white p-6 my-6">
-        <p class="text-base font-semibold">Level System</p>
-        <div class="flex gap-2">
-          <p class="text-2xl font-extrabold">
-            Progress
-          </p>
-          <p class="text-2xl font-extrabold text-primary">
-            with Purpose
-          </p>
-        </div>
-        <p class="text-justify mt-4 text-base leading-loose text-gray-400">
-          USDBIT’s 3-level structure is designed to reward your activity and consistency. Start at Level 1, unlock
-          greater benefits at Level 2, and reach Level 3 for maximum bonuses and exclusive opportunities. The more you
-          participate, the more you earn—simple, transparent, motivating.
-        </p>
-      </div>
       <Footer/>
     </div>
   </div>
@@ -253,9 +229,9 @@ const {your_reward, withdrawReward, isWithdrawRewardLoading, referralCode, total
 
 const levels = [
   {name: 'Level 1', percent: '5', icon: bitcoinConvert},
-  {name: 'Level 2', percent: '5', icon: bitcoinConvert},
-  {name: 'Level 3', percent: '5', icon: bitcoinConvert},
-  {name: 'Level 4', percent: '5', icon: bitcoinConvert},
+  {name: 'Level 2', percent: '3', icon: bitcoinConvert},
+  {name: 'Level 3', percent: '2', icon: bitcoinConvert},
+  {name: 'Level 4', percent: '1', icon: bitcoinConvert},
 ]
 const shortAddress = computed(() => {
   if (address.value) {
