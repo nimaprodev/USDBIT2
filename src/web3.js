@@ -27,14 +27,19 @@ export const publicClient = createPublicClient({
 
 // get BNB balance
 export async function getBalance(account) {
-    const balance = await publicClient.getBalance({
-        address: account,
-    });
-
-    if (!balance) return BigInt(0);
-    return balance;
-
+    try {
+        const  balance = await publicClient.readContract({
+            address: USDT_CONTRACT_ADDRESS,
+            abi: USDT_ABI,
+            functionName: 'balanceOf',
+            args: [account]
+        });
+       return formatEther(balance)
+    } catch (e) {
+        return BigInt(0)
+    }
 }
+
 
 export async function waitForTransactionReceipt(publicClient, approve_tx_id, timeout = 120000, retryCount = 5) {
     const startTime = Date.now();
@@ -222,19 +227,23 @@ export async function getUserInfo(account) {
 export async function withdrawDividends(account, plan_id) {
     try {
         const client = await ConnectWalletClient();
+        const publicClient = createPublicClient({
+            chain: CHAIN,
+            transport: http()
+        });
+
         const {request} = await publicClient.simulateContract({
             account,
-            address: contractAddress,
-            abi: contractABI,
-            functionName: 'withdrawPlanProfit',
-            args: [plan_id],
+            address: usdbitContractAddress,
+            abi: usdbitABI,
+            functionName: 'withdrawProfit',
         });
 
         return await client.writeContract(request);
 
 
     } catch (error) {
-        console.error('Error in withdrawDividends:', error);
+        console.error('Error in withdrawProfit:', error);
 
         if (error instanceof BaseError) {
             const revertError = error.walk((err) => err instanceof ContractFunctionRevertedError);

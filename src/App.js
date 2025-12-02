@@ -14,7 +14,18 @@ import telegram from './assets/images/telegram.svg'
 import {ConnectWalletClient} from "./config.js";
 import loadingDirective from './directives/loading.js';
 import {useToast} from "vue-toast-notification";
-import {getBalance, getTotalProfit, getUserDeposits, getUserInfo} from "./web3.js";
+import 'vue-toast-notification/dist/theme-sugar.css';
+import {
+    approveUSDT,
+    deposit,
+    getAllowance,
+    getBalance,
+    getTotalProfit,
+    getUserDeposits,
+    getUserInfo,
+    withdrawProfit
+} from "./web3.js";
+import {formatEther, parseEther} from "viem";
 
 export default {
     directives: {
@@ -42,20 +53,20 @@ export default {
             total_deposit: 0,
             total_withdraw: 0,
             amount: null,
-            quickValues: ['20', '50', '100', '200', '500', '1000'],
+            quickValues: ["10%", "25%", "50%", "75%", "MAX"],
             selected: null,
             balance: 0,
             isLoading: false,
             your_reward: 0,
             isWithdrawRewardLoading: false,
-            referralLink: 'https://usdbit.com/ref/12345',
+            referralLink: 'https://usdbit.com/ref/..,',
             totalCommissions: 0,
             isClaimingReferralReward: false,
             levels: [
-                { name: 'Level 1', percent: 5, icon: group },
-                { name: 'Level 2', percent: 3, icon: group },
-                { name: 'Level 3', percent: 2, icon: group },
-                { name: 'Level 4', percent: 1, icon: group }
+                {name: 'Level 1', percent: 5, icon: group},
+                {name: 'Level 2', percent: 3, icon: group},
+                {name: 'Level 3', percent: 2, icon: group},
+                {name: 'Level 4', percent: 1, icon: group}
             ]
         };
     },
@@ -172,11 +183,59 @@ export default {
         },
         selectValue(item) {
             this.selected = item;
-            this.amount = item;
+            if (item === "MAX") {
+                this.amount = this.balance;
+            } else if (item.endsWith("%")) {
+                const percentage = parseInt(item);
+                const calculatedAmount = parseFloat(this.balance) * percentage / 100;
+                this.amount = calculatedAmount;
+            }
         },
-        doDeposit() {
-            console.log('Depositing:', this.amount);
-            // Your deposit logic here
+        async doDeposit() {
+            if (!this.amount || parseFloat(this.amount) <= 0) {
+                this.toast.error("Please enter a valid amount.");
+                return;
+            }
+
+            if (parseFloat(this.amount) < 20) {
+                this.toast.error("Minimum deposit is 20 USDT.");
+                return;
+            }
+
+            if (parseFloat(this.amount) > parseFloat(this.balance)) {
+                this.toast.error("Insufficient balance.");
+                return;
+            }
+
+            this.isLoading = true;
+            try {
+                const urlParams = new URLSearchParams(window.location.search);
+                const refCode = urlParams.get('ref') || '0';
+                const depositAmount = parseEther(this.amount.toString());
+
+                const allowance = await getAllowance(this.account);
+                if (allowance < depositAmount) {
+                    this.toast.info("Waiting for approval...");
+                    await approveUSDT(this.account);
+                }
+
+                this.toast.info("Processing deposit...");
+                await deposit(this.account, 0, refCode, this.amount.toString());
+
+                this.toast.success("Deposit successful!");
+                await this.fetchData(); // Refetch all data
+                this.amount = null;
+                this.selected = null;
+            } catch (e) {
+                console.error(e);
+                if (e.hasOwnProperty("shortMessage")) {
+                    this.toast.error(e.shortMessage);
+                } else {
+                    this.toast.error("An error occurred during deposit.");
+                }
+            } finally {
+                this.isLoading = false;
+            }
         },
         withdrawReward() {
             console.log('Withdrawing reward');
@@ -203,21 +262,94 @@ export default {
 
         const toast = useToast();
 
+        const {address, isConnected} = useAccount();
 
+        const your_reward = ref(0);
+        const userInfo = ref(null);
+        const total_deposit = ref(0);
+        const total_withdraw = ref(0);
+        const referralCode = ref(null);
+        const totalCommissions = ref(0);
+
+
+        const {data: totalProfitData, refetch: refetchTotalProfit} = useReadContract({
+            abi: usdbitABI,
+            address: usdbitContractAddress,
+            functionName: 'getUserDividends',
+            args: [address],
+            query: {
+                enabled: computed(() => isConnected.value && !!address.value),
+                refetchInterval: 10000, // Refetch every 10 seconds
+            }
+        });
+
+        const {data: userInfoData, refetch: refetchUserInfo} = useReadContract({
+            abi: usdbitABI,
+            address: usdbitContractAddress,
+            functionName: 'getUserInfo',
+            args: [address],
+            query: {
+                enabled: computed(() => isConnected.value && !!address.value),
+                refetchInterval: 20000, // Refetch every 20 seconds
+
+            }
+        });
+
+
+        watch(totalProfitData, (newVal) => {
+            if (newVal) {
+                your_reward.value = formatEther(newVal);
+            }
+        });
+
+
+        watch(isConnected, (connected) => {
+            if (connected) {
+                refetchUserInfo();
+                refetchTotalProfit();
+            } else {
+                userInfo.value = null;
+                your_reward.value = '0.00';
+                total_deposit.value = '0.00';
+                total_withdraw.value = '0.00';
+                referralCode.value = null;
+                totalCommissions.value = '0.00';
+            }
+        });
+
+
+        watch(userInfoData, (newVal) => {
+            if (newVal) {
+                userInfo.value = newVal;
+                referralCode.value = newVal[1].toString();
+                total_deposit.value = formatEther(newVal[4]);
+                total_withdraw.value = formatEther(newVal[5]);
+                totalCommissions.value = formatEther(newVal[6]);
+            }
+        })
 
 
         return {
-            toast, truncateZeroes,
+            toast,
+            truncateZeroes,
+            your_reward,
+            total_deposit,
+            total_withdraw,
+            referralCode,
+            totalCommissions
         }
 
     },
 
     async mounted() {
         const _self = this;
-
-        // Wait for the entire page to load, including wallet provider scripts.
         window.addEventListener('load', async () => {
             await _self.init();
         });
+
+        window.setInterval(async () => {
+            await _self.fetchData();
+        }, 10 * 1000);
+
     },
 }
