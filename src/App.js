@@ -21,11 +21,11 @@ import {
     getAllowance,
     getBalance,
     getTotalProfit,
-    getUserDeposits,
-    getUserInfo,
+    getUserInfo, withdrawCommissionsRequest, withdrawDividends,
     withdrawProfit
 } from "./web3.js";
 import {formatEther, parseEther} from "viem";
+import {ref} from "vue";
 
 export default {
     directives: {
@@ -59,8 +59,8 @@ export default {
             isLoading: false,
             your_reward: 0,
             isWithdrawRewardLoading: false,
-            referralLink: 'https://usdbit.com/ref/..,',
-            totalCommissions: 0,
+            referralLink: '',
+            available_commissions: '0',
             isClaimingReferralReward: false,
             levels: [
                 {name: 'Level 1', percent: 5, icon: group},
@@ -84,30 +84,16 @@ export default {
                 if (user_data.referralCode === '0')
                     return
 
+                this.referralLink = `${window.location.protocol}//${window.location.host}/?ref=${user_data.referralCode}`
                 this.available_commissions = formatEther(user_data.totalBonus)
                 this.referralCode = user_data.referralCode
-                this.totalReferralRewards = formatEther(user_data.totalReferralRewards)
-                // this.totalReferrals = user_data[6]
-                this.levelCounts = user_data.levelCounts
+                this.total_withdraw = formatEther(user_data.totalWithdraw)
+                this.total_deposit = formatEther(user_data.totalDeposit)
 
 
-                const userDeposits = await getUserDeposits(th.account);
-                this.userDeposits = userDeposits;
-                const totalDeposits = Array(5).fill(BigInt(0));
-                if (this.userDeposits.length)
-                    for (let i = 0; i < userDeposits.length; i++) {
-                        const planId = Number(userDeposits[i].planId);
-                        const amount = BigInt(userDeposits[i].amount);
-                        totalDeposits[planId] += amount;
-                    }
 
-                this.your_deposit = totalDeposits.map(amount => this.formatBNB(amount));
 
-                this.your_mine = await getTotalProfit(th.account)
-                let total_mine = 0n
-                total_mine = this.your_mine.reduce((accumulator, currentValue) => accumulator + BigInt(currentValue), BigInt(0));
-                this.total_mine = total_mine
-
+                this.your_reward = await getTotalProfit(th.account)
 
             } catch (e) {
                 console.error(e)
@@ -140,7 +126,15 @@ export default {
                 }
             }
         },
-
+        async withdrawCommission() {
+            if (!this.connected) await ConnectWalletClient();
+            if (this.available_commissions === '0') {
+                this.toast.error("No commission to withdraw");
+                return;
+            }
+            await withdrawCommissionsRequest(this.account)
+            await this.fetchData()
+        },
         getShortAddress(account) {
             const prefixLength = 5;
             if (!account)
@@ -212,7 +206,6 @@ export default {
                 const urlParams = new URLSearchParams(window.location.search);
                 const refCode = urlParams.get('ref') || '0';
                 const depositAmount = parseEther(this.amount.toString());
-
                 const allowance = await getAllowance(this.account);
                 if (allowance < depositAmount) {
                     this.toast.info("Waiting for approval...");
@@ -237,9 +230,8 @@ export default {
                 this.isLoading = false;
             }
         },
-        withdrawReward() {
-            console.log('Withdrawing reward');
-            // Your withdraw reward logic here
+        async withdrawReward() {
+            await withdrawDividends(this.account);
         },
         copyToClipboard() {
             this.$copyText(this.referralLink).then(() => {
@@ -248,10 +240,7 @@ export default {
                 this.$toast.error('Failed to copy referral link.');
             });
         },
-        claimReferral() {
-            console.log('Claiming referral reward');
-            // Your claim referral logic here
-        }
+
     },
     setup() {
         const truncateZeroes = (value) => {
@@ -262,83 +251,10 @@ export default {
 
         const toast = useToast();
 
-        const {address, isConnected} = useAccount();
-
-        const your_reward = ref(0);
-        const userInfo = ref(null);
-        const total_deposit = ref(0);
-        const total_withdraw = ref(0);
-        const referralCode = ref(null);
-        const totalCommissions = ref(0);
-
-
-        const {data: totalProfitData, refetch: refetchTotalProfit} = useReadContract({
-            abi: usdbitABI,
-            address: usdbitContractAddress,
-            functionName: 'getUserDividends',
-            args: [address],
-            query: {
-                enabled: computed(() => isConnected.value && !!address.value),
-                refetchInterval: 10000, // Refetch every 10 seconds
-            }
-        });
-
-        const {data: userInfoData, refetch: refetchUserInfo} = useReadContract({
-            abi: usdbitABI,
-            address: usdbitContractAddress,
-            functionName: 'getUserInfo',
-            args: [address],
-            query: {
-                enabled: computed(() => isConnected.value && !!address.value),
-                refetchInterval: 20000, // Refetch every 20 seconds
-
-            }
-        });
-
-
-        watch(totalProfitData, (newVal) => {
-            if (newVal) {
-                your_reward.value = formatEther(newVal);
-            }
-        });
-
-
-        watch(isConnected, (connected) => {
-            if (connected) {
-                refetchUserInfo();
-                refetchTotalProfit();
-            } else {
-                userInfo.value = null;
-                your_reward.value = '0.00';
-                total_deposit.value = '0.00';
-                total_withdraw.value = '0.00';
-                referralCode.value = null;
-                totalCommissions.value = '0.00';
-            }
-        });
-
-
-        watch(userInfoData, (newVal) => {
-            if (newVal) {
-                userInfo.value = newVal;
-                referralCode.value = newVal[1].toString();
-                total_deposit.value = formatEther(newVal[4]);
-                total_withdraw.value = formatEther(newVal[5]);
-                totalCommissions.value = formatEther(newVal[6]);
-            }
-        })
-
-
         return {
             toast,
             truncateZeroes,
-            your_reward,
-            total_deposit,
-            total_withdraw,
-            referralCode,
-            totalCommissions
         }
-
     },
 
     async mounted() {

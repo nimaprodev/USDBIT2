@@ -5,20 +5,15 @@
 
         <header class="absolute top-0 left-0 w-full flex items-center justify-between px-5 py-4 z-10">
           <img :src="logo" alt="Hero Image" class="object-cover "/>
-          <p>sss --- {{isConnected}}</p>
           <div v-if="isConnected" class="flex items-center space-x-2">
             <span class="text-black text-sm  bg-yellow-500  px-3 py-1 rounded-md">{{ shortAddress() }}</span>
           </div>
-          <div v-else class="flex flex-col gap-2">
-            <button
+            <button v-else
                 @click="connectWallet"
                 class="bg-primary text-white px-4 py-2 rounded-md"
             >
               Connect Wallet
             </button>
-          </div>
-
-
         </header>
         <div class="mt-16">
           <img :src="heroImg" alt="Hero Image" class="object-cover w-full h-auto"/>
@@ -178,11 +173,8 @@
                 </div>
                 <div class="flex flex-col text-left flex-1">
                   <p class="text-primary font-semibold text-sm">Total Commissions</p>
-                  {{ totalCommissions }}
-                  <span class="text-xl font-semibold text-white mt-2 leading-none">{{
-                      formatDisplayNumber(totalCommissions)
-                    }} USDT</span>
-                  <button v-loading="isClaimingReferralReward" @click="claimReferral"
+                  <span class="text-xl font-semibold text-white mt-2 leading-none">{{ formatDisplayNumber(available_commissions) }} USDT</span>
+                  <button v-loading="isClaimingReferralReward" @click="withdrawCommission"
                           class="text-white bg-secondary text-sm mt-2 w-36 inline-flex items-center rounded px-3 py-1">
 
                     Withdraw Now
@@ -218,9 +210,6 @@
             Your capital stays securely locked while earnings are paid automatically.<br />
             Our 4-level referral system delivers instant USDT bonuses.<br />
             USDBIT — smart, stable, and blockchain-driven income.<br />
-
-
-
           </p>
           <a href="t.me/usdbit_team" class="text-gray-200 px-4 py-2 rounded-lg border border-grey-300 mt-6 flex items-center gap-2">
             <img :src="telegram" alt="telegram" />

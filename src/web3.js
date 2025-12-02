@@ -8,24 +8,16 @@ import {
     http, maxUint256,
     parseEther
 } from 'viem';
-import {ABI, CHAIN, ConnectWalletClient, CONTRACT_ADDRESS, USDT_ABI, USDT_CONTRACT_ADDRESS} from './config.js';
-
-const transport = typeof window.ethereum !== 'undefined' ? custom(window.ethereum) : http();
-
-let client = createWalletClient({
-    chain: CHAIN,
-    transport: transport,
-});
-
-const contractAddress = CONTRACT_ADDRESS;
-const contractABI = ABI;
-export const publicClient = createPublicClient({
-    chain: CHAIN,
-    transport: transport,
-});
+import {
+    ABI as contractABI,
+    CONTRACT_ADDRESS,
+    ConnectWalletClient,
+    publicClient,
+    USDT_ABI,
+    USDT_CONTRACT_ADDRESS, ABI, CHAIN
+} from "./config.js";
 
 
-// get BNB balance
 export async function getBalance(account) {
     try {
         const  balance = await publicClient.readContract({
@@ -60,35 +52,6 @@ export async function waitForTransactionReceipt(publicClient, approve_tx_id, tim
 }
 
 
-export async function getUserDeposits(account) {
-    try {
-
-        const {result} = await publicClient.simulateContract({
-            account,
-            address: contractAddress,
-            abi: contractABI,
-            functionName: "getUserDeposits",
-            args: [account]
-        });
-
-        const processedResult = result.map(array =>
-            array.map(value => typeof value === 'bigint' ? value.toString() : value)
-        );
-        const [planIds, amounts, startTimes, ends] = processedResult;
-        return planIds.map((_, index) => ({
-            planId: planIds[index],
-            amount: amounts[index],
-            startTime: startTimes[index],
-            end: ends[index]
-        }));
-
-    } catch (error) {
-        console.error('Error in getUserDeposits:', error);
-        // Return an empty array if there's an error
-        return [];
-    }
-}
-
 export async function getAllowance(owner) {
     return await publicClient.readContract({
         address: USDT_CONTRACT_ADDRESS,
@@ -120,7 +83,7 @@ export async function deposit(account, planId, refCode, _amount) {
         address: CONTRACT_ADDRESS,
         abi: ABI,
         functionName: 'deposit',
-        args: [planId, amount, refCode]
+        args: [amount, refCode]
     });
     const hash = await client.writeContract(request);
     return await publicClient.waitForTransactionReceipt({hash});
@@ -131,11 +94,12 @@ export async function withdrawCommissionsRequest(account) {
     try {
         const {request} = await publicClient.simulateContract({
             account,
-            address: contractAddress,
+            address: CONTRACT_ADDRESS,
             abi: contractABI,
             functionName: 'claimReferralRewards',
             args: [],
         });
+    const client = await ConnectWalletClient();
         return await client.writeContract(request);
     } catch (error) {
         console.error('Withdraw error caught:', error);
@@ -144,16 +108,16 @@ export async function withdrawCommissionsRequest(account) {
 
 }
 
-export async function withdrawPlan(account, depositIndex) {
+export async function withdrawProfit(account, depositIndex) {
 
     try {
         const client = await ConnectWalletClient();
         const {request} = await publicClient.simulateContract({
             account,
-            address: contractAddress,
+            address: CONTRACT_ADDRESS,
             abi: contractABI,
-            functionName: 'withdrawPlan',
-            args: [depositIndex],
+            functionName: 'withdrawProfit',
+            args: [account],
         });
         return await client.writeContract(request);
 
@@ -175,9 +139,8 @@ export async function withdrawPlan(account, depositIndex) {
 export async function getUserInfo(account) {
     try {
         const result = await publicClient.readContract({
-            account,
-            address: contractAddress,
-            abi: contractABI,
+            address: CONTRACT_ADDRESS,
+            abi: ABI,
             functionName: 'getUserInfo',
             args: [account],
         });
@@ -186,11 +149,11 @@ export async function getUserInfo(account) {
             id: result[0],
             referralCode: result[1],
             referrerCode: result[2],
-            totalBonus: result[3],
-            referrer: result[4],
-            totalReferralRewards: result[5],
-            totalReferrals: result[6],
-            levelCounts: result[7],
+            referrer: result[3],
+            totalDeposit: result[4],
+            totalWithdraw: result[5],
+            totalBonus: result[6],
+            totalReferralRewards: result[7],
         };
 
 
@@ -234,8 +197,8 @@ export async function withdrawDividends(account, plan_id) {
 
         const {request} = await publicClient.simulateContract({
             account,
-            address: usdbitContractAddress,
-            abi: usdbitABI,
+            address: CONTRACT_ADDRESS,
+            abi: ABI,
             functionName: 'withdrawProfit',
         });
 
@@ -259,12 +222,12 @@ export async function getTotalProfit(account, plan_id) {
     try {
         const result = await publicClient.readContract({
             account,
-            address: contractAddress,
+            address: CONTRACT_ADDRESS,
             abi: contractABI,
-            functionName: 'getTotalProfit',
+            functionName: 'getUserDividends',
+            args: [account],
         });
-        const [_, profits] = result;
-        return profits;
+        return formatEther(result);
     } catch (error) {
         console.error('Error in getTotalProfit:', error);
         if (error instanceof BaseError) {
@@ -283,7 +246,7 @@ export async function getTotalDeposited(account) {
     try {
         return await publicClient.readContract({
             account,
-            address: contractAddress,
+            address: CONTRACT_ADDRESS,
             abi: contractABI,
             functionName: 'getTotalDeposited',
             args: [account],

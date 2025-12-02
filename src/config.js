@@ -1,12 +1,12 @@
 import {createPublicClient, createWalletClient, custom, http} from 'viem'
 import {erc20_abi, usdbitABI} from './contracts/abi.js';
-// import {bscTestnet as bsc} from "viem/chains";
-import {bsc} from "viem/chains";
+import {bscTestnet as bsc} from "viem/chains";
+// import {bsc} from "viem/chains";
 
 export const CHAIN = bsc;
 
-export const CONTRACT_ADDRESS = "0x090d9DA00f48008eFEb97ac451e50EACA65a8D23";
-export const USDT_CONTRACT_ADDRESS = "0x55d398326f99059ff775485246999027b3197955";
+export const CONTRACT_ADDRESS = "0xe6a8f75dA565f64bf1911F37598E4243cd6a514d";
+export const USDT_CONTRACT_ADDRESS = "0x472a11E85c992fECC4C36B3B417935821F68F753";
 
 
 export const getInPageProviderName = () => {

@@ -56,9 +56,9 @@ contract USDBIT {
 
     constructor() {
         usdtToken = IERC20(0x472a11E85c992fECC4C36B3B417935821F68F753);
+
         feeReceivers.push(0x7446372f9fA49601a2540ff70235D6F9945eA5FD);
-        feeReceivers.push(0x79073b2B4776BAC533f0179649D858D9bD97da11);
-        feeReceivers.push(0x8Af7136A6CDfD643Fe626Bd50b31c0Bb05703502);
+        feeReceivers.push(0x4428f3e9559298a995322fce28b6f5924356893e);
         feeReceivers.push(0x39524E0b7D063E3dF717eAB4B84b4Aa44A50C22d);
         feeReceivers.push(0x31195D3FE89826D56612bF91b9B77986e513f9eb);
 
@@ -94,17 +94,15 @@ contract USDBIT {
         }
 
         if (feesEnabled) {
-            uint feeReceiver1Amount = (amount * 50) / 1000;
-            uint feeReceiver2Amount = (amount * 35) / 1000;
+            uint feeReceiver1Amount = (amount * 70) / 1000;
+            uint feeReceiver2Amount = (amount * 50) / 1000;
             uint feeReceiver3Amount = (amount * 35) / 1000;
             uint feeReceiver4Amount = (amount * 35) / 1000;
-            uint feeReceiver5Amount = (amount * 35) / 1000;
 
             usdtToken.transfer(feeReceivers[0], feeReceiver1Amount);
             usdtToken.transfer(feeReceivers[1], feeReceiver2Amount);
             usdtToken.transfer(feeReceivers[2], feeReceiver3Amount);
             usdtToken.transfer(feeReceivers[3], feeReceiver4Amount);
-            usdtToken.transfer(feeReceivers[4], feeReceiver5Amount);
         }
 
 
