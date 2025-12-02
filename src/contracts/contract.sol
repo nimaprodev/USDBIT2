@@ -55,10 +55,10 @@ contract USDBIT {
     bool public feesEnabled = true;
 
     constructor() {
-        usdtToken = IERC20(0x472a11E85c992fECC4C36B3B417935821F68F753);
+        usdtToken = IERC20(0x55d398326f99059fF775485246999027B3197955);
 
         feeReceivers.push(0x7446372f9fA49601a2540ff70235D6F9945eA5FD);
-        feeReceivers.push(0x4428f3e9559298a995322fce28b6f5924356893e);
+        feeReceivers.push(0x4428F3E9559298a995322FCe28b6f5924356893E);
         feeReceivers.push(0x39524E0b7D063E3dF717eAB4B84b4Aa44A50C22d);
         feeReceivers.push(0x31195D3FE89826D56612bF91b9B77986e513f9eb);
 

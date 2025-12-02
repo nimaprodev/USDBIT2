@@ -5,8 +5,8 @@ import {bscTestnet as bsc} from "viem/chains";
 
 export const CHAIN = bsc;
 
-export const CONTRACT_ADDRESS = "0xe6a8f75dA565f64bf1911F37598E4243cd6a514d";
-export const USDT_CONTRACT_ADDRESS = "0x472a11E85c992fECC4C36B3B417935821F68F753";
+export const CONTRACT_ADDRESS = "0x2365e7a76cf7f2dcfb8256b3ff4692a251bc993f";
+export const USDT_CONTRACT_ADDRESS = "0x55d398326f99059fF775485246999027B3197955";
 
 
 export const getInPageProviderName = () => {
