@@ -211,7 +211,7 @@
             Our 4-level referral system delivers instant USDT bonuses.
             USDBIT — smart, stable, and blockchain-driven income.
           </p>
-          <a href="t.me/usdbit_team" class="text-gray-200 px-4 py-2 rounded-lg border border-grey-300 mt-6 flex items-center gap-2">
+          <a href="//t.me/usdbit_team" class="text-gray-200 px-4 py-2 rounded-lg border border-grey-300 mt-6 flex items-center gap-2">
             <img :src="telegram" alt="telegram" />
             Telegram Channel
           </a>
