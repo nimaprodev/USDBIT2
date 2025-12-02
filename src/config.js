@@ -1,7 +1,7 @@
 import {createPublicClient, createWalletClient, custom, http} from 'viem'
 import {erc20_abi, usdbitABI} from './contracts/abi.js';
-import {bscTestnet as bsc} from "viem/chains";
-// import {bsc} from "viem/chains";
+//import {bscTestnet as bsc} from "viem/chains";
+import {bsc} from "viem/chains";
 
 export const CHAIN = bsc;
 
