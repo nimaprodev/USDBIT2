@@ -59,7 +59,7 @@ export default {
             isLoading: false,
             your_reward: 0,
             isWithdrawRewardLoading: false,
-            referralLink: '',
+            referralLink: 'Referral link activates after investment.',
             available_commissions: '0',
             isClaimingReferralReward: false,
             levels: [
