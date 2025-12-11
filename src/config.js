@@ -5,7 +5,7 @@ import {bsc} from "viem/chains";
 
 export const CHAIN = bsc;
 
-export const CONTRACT_ADDRESS = "0x2365e7a76cf7f2dcfb8256b3ff4692a251bc993f";
+export const CONTRACT_ADDRESS = "0xb4552f5B22511c45dD4DF6EC1fF4E957e8960E53";
 export const USDT_CONTRACT_ADDRESS = "0x55d398326f99059fF775485246999027B3197955";
 
 
