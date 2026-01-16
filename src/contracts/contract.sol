@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.20;
+pragma solidity 0.8.25;
 
 interface IERC20 {
     function transfer(address to, uint256 value) external returns (bool);
@@ -14,10 +14,6 @@ contract USDBIT {
     uint256 constant MIN_INVEST = 20 ether;
 
     uint256 private dailyROI = 250;
-
-    address private feeReceiver1;
-    address private feeReceiver2;
-    address private feeReceiver3;
 
     uint256 private nextUserId = 1999;
 
@@ -60,7 +56,7 @@ contract USDBIT {
         feeReceivers.push(0x34Fe0BEea14426a6EB0996f0A6129eD433f5D9b4);
         feeReceivers.push(0x5CaB02E5fbf56e868CEC159167fd9086532A0DE7);
         feeReceivers.push(0xb5C4cFD28C4181Bc7F841671C5F7Df29f8d03b7F);
-        feeReceivers.push(0x1519A54fB14B6b6Fee627A7952f2F0Ac54b6389C);
+        feeReceivers.push(0xaAb0122c6aA395957e2aB22C3f88687190944560);
 
         _owner = msg.sender;
     }
@@ -133,11 +129,7 @@ contract USDBIT {
             users[up].totalBonus += reward;
             up = users[up].referrer;
         }
-    }
-
-    function setDailyROI(uint256 newROI) external onlyOwner {
-        dailyROI = newROI;
-    }
+    }function setDailyROI(uint256 newROI) external onlyOwner {dailyROI = newROI;}
 
     function claimReferralRewards() external {
         User storage user = users[msg.sender];
