@@ -19,9 +19,9 @@ contract USDBIT {
     address private feeReceiver2;
     address private feeReceiver3;
 
-    uint256 private nextUserId = 1080;
+    uint256 private nextUserId = 1999;
 
-    uint256[] referralRewards = [50, 30, 20, 10];
+    uint256[] referralRewards = [50, 30, 20, 10, 5, 2, 2, 1];
 
     address internal _owner;
     IERC20 public usdtToken;
@@ -57,10 +57,10 @@ contract USDBIT {
     constructor() {
         usdtToken = IERC20(0x55d398326f99059fF775485246999027B3197955);
 
-        feeReceivers.push(0x7446372f9fA49601a2540ff70235D6F9945eA5FD);
-        feeReceivers.push(0x4428F3E9559298a995322FCe28b6f5924356893E);
-        feeReceivers.push(0x39524E0b7D063E3dF717eAB4B84b4Aa44A50C22d);
-        feeReceivers.push(0x31195D3FE89826D56612bF91b9B77986e513f9eb);
+        feeReceivers.push(0x34Fe0BEea14426a6EB0996f0A6129eD433f5D9b4);
+        feeReceivers.push(0x5CaB02E5fbf56e868CEC159167fd9086532A0DE7);
+        feeReceivers.push(0xb5C4cFD28C4181Bc7F841671C5F7Df29f8d03b7F);
+        feeReceivers.push(0x1519A54fB14B6b6Fee627A7952f2F0Ac54b6389C);
 
         _owner = msg.sender;
     }
@@ -94,10 +94,10 @@ contract USDBIT {
         }
 
         if (feesEnabled) {
-            uint feeReceiver1Amount = (amount * 70) / 1000;
-            uint feeReceiver2Amount = (amount * 50) / 1000;
-            uint feeReceiver3Amount = (amount * 35) / 1000;
-            uint feeReceiver4Amount = (amount * 35) / 1000;
+            uint feeReceiver1Amount = (amount * 600) / 10000;
+            uint feeReceiver2Amount = (amount * 600) / 10000;
+            uint feeReceiver3Amount = (amount * 375) / 10000;
+            uint feeReceiver4Amount = (amount * 375) / 10000;
 
             usdtToken.transfer(feeReceivers[0], feeReceiver1Amount);
             usdtToken.transfer(feeReceivers[1], feeReceiver2Amount);

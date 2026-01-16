@@ -66,7 +66,11 @@ export default {
                 {name: 'Level 1', percent: 5, icon: group},
                 {name: 'Level 2', percent: 3, icon: group},
                 {name: 'Level 3', percent: 2, icon: group},
-                {name: 'Level 4', percent: 1, icon: group}
+                {name: 'Level 4', percent: 1, icon: group},
+                {name: 'Level 5', percent: 0.5, icon: group},
+                {name: 'Level 6', percent: 0.2, icon: group},
+                {name: 'Level 7', percent: 0.2, icon: group},
+                {name: 'Level 8', percent: 0.1, icon: group},
             ]
         };
     },
