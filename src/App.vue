@@ -22,7 +22,7 @@
               Grow your future with USDBIT and enjoy bonuses every single day
             </p>
             <p class="mt-3 text-xs text-white w-full">
-              2.5% daily bonus and 4 levels Referral marketing!
+              2.5% daily bonus and 8 levels Referral marketing!
             </p>
 
           </div>
@@ -125,10 +125,10 @@
         </p>
         <p class="text-justify mt-4 text-base leading-loose text-gray-400">
           Welcome to USDBIT – your trusted gateway to stable USDT-based growth!<br/>
-          At USDBIT, you earn a solid 3% daily ROI for 120 days — starting with only 20 USDT.<br/>
+          At USDBIT, you earn a solid 2.5% daily ROI for 120 days — starting with only 20 USDT.<br/>
           Our automated smart-contract system locks your capital securely and rewards you with transparent daily
           profits.<br/>
-          Plus, with our 4-level referral program, you can boost your earnings: 5% – 3% – 2% – 1% paid instantly in
+          Plus, with our 4-level referral program, you can boost your earnings: 5% from Level 1, 3% from Level 2, 2% from Level 3, 1% from Level 4, 0.5% from Level 5, 0.2% from Level 6, 0.2% from Level 7, and 0.1% from Level 8  paid instantly in
           USDT.<br/>
           Join USDBIT today and experience smart, reliable, and reward-driven investing — powered fully by
           blockchain.<br/>
