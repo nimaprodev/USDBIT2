@@ -200,21 +200,44 @@
         </div>
       </div>
       <!--      </TotalCommissionCard>-->
-      <div class="relative text-center overflow-hidden">
-        <img :src="footer" alt="footer" class="object-cover w-full h-auto" />
 
-        <div class="absolute inset-0 flex flex-col  items-center text-center px-4 pb-6 mt-10">
+
+            <div class=" p-6 w-full mb-6">
+        <div class="flex items-center text-2xl font-extrabold gap-2 mb-4">
+          <span class="text-primary">FAQ</span>
+        </div>
+
+        <div class="flex flex-col gap-3">
+          <details
+              v-for="(item, index) in faqItems"
+              :key="item.question"
+              class="bg-gray-50 rounded-md p-4 group"
+          >
+            <summary class="list-none cursor-pointer text-left flex items-start justify-between gap-3">
+              <span class="text-white font-semibold text-sm">{{ index + 1 }}. {{ item.question }}</span>
+              <span class="text-primary text-base leading-none group-open:rotate-45 transition-transform">+</span>
+            </summary>
+            <p class="text-gray-400 text-sm leading-relaxed mt-3 text-left">
+              {{ item.answer }}
+            </p>
+          </details>
+        </div>
+      </div>
+      <div class="text-center  p-6">
+        <div class="flex flex-col items-center text-center">
           <img :src="footerLogo" alt="footer logo" />
           <p class="text-justify mt-5 text-base text-gray-500">
             USDBIT runs on a transparent USDT smart contract that rewards you with fixed daily profits for 120 days.
             Your capital stays securely locked while earnings are paid automatically.
             Our 4-level referral system delivers instant USDT bonuses.
-            USDBIT — smart, stable, and blockchain-driven income.
+            USDBIT — smart, stable, and blockchain-driven income.<br><br><br>
+            <small>71–75 Shelton Street, Covent Garden, London WC2H 9JQ, United Kingdom</small>
           </p>
-          <a href="//t.me/usdbit_team" class="text-gray-200 px-4 py-2 rounded-lg border border-grey-300 mt-6 flex items-center gap-2">
+          <a href="//t.me/usdbit_team" class="text-gray-200 px-4 py-2 rounded-lg border border-grey-300 mt-4 mb-10 flex items-center gap-2">
             <img :src="telegram" alt="telegram" />
             Telegram Channel
           </a>
+
         </div>
       </div>
     </div>

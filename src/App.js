@@ -8,7 +8,6 @@ import group from './assets/images/group.svg'
 import heroImg from './assets/images/hero.png'
 import logo from './assets/images/logo.svg'
 import trendUp from './assets/images/trend-up.svg';
-import footer from './assets/images/footer.png'
 import footerLogo from './assets/images/footer-logo.svg'
 import telegram from './assets/images/telegram.svg'
 import {ConnectWalletClient} from "./config.js";
@@ -44,7 +43,6 @@ export default {
             heroImg,
             logo,
             trendUp,
-            footer,
             footerLogo,
             telegram,
 
@@ -62,6 +60,44 @@ export default {
             referralLink: 'Referral link activates after investment.',
             available_commissions: '0',
             isClaimingReferralReward: false,
+            faqItems: [
+                {
+                    question: "What is USDBIT and which network does it run on?",
+                    answer: "USDBIT is a USDT-based investment dApp running on BNB Chain (BSC). You interact using a wallet like MetaMask set to BNB Chain."
+                },
+                {
+                    question: "What token do I deposit?",
+                    answer: "You deposit USDT (BEP-20) on BNB Chain. The USDT contract used is: 0x55d398326f99059fF775485246999027B3197955."
+                },
+                {
+                    question: "What is the minimum deposit?",
+                    answer: "The minimum deposit is 20 USDT."
+                },
+                {
+                    question: "How do I make my first deposit on the website?",
+                    answer: "Open Dashboard/App, click Connect Wallet, enter your amount (>= 20 USDT), click Approve USDT (first time only) and confirm in wallet, then click Deposit and confirm in wallet."
+                },
+                {
+                    question: "What is the daily ROI and how long does it last?",
+                    answer: "Default ROI is 2.5% per day, and each deposit runs for 120 days. After 120 days, that deposit stops generating profit. The contract owner can change the daily ROI for future calculations."
+                },
+                {
+                    question: "Can I withdraw my principal (initial deposit)?",
+                    answer: "No. Principal is not withdrawable in this contract. Only profit and referral rewards can be withdrawn."
+                },
+                {
+                    question: "How do I withdraw my daily profit on the website?",
+                    answer: "On the Dashboard, go to Your Reward section, click Withdraw Now, and confirm the transaction in your wallet. Profit is based on time passed since your last profit withdrawal and your active deposits."
+                },
+                {
+                    question: "How does the referral program work?",
+                    answer: "USDBIT has an 8-level referral program: 5%, 3%, 2%, 1%, 0.5%, 0.2%, 0.2%, 0.1%. Copy your referral link/invite code, share it, and earn when your team deposits through your link/code."
+                },
+                {
+                    question: "How do I withdraw referral rewards on the website?",
+                    answer: "Referral rewards accumulate as bonus balance. Go to Total Commissions section, click Withdraw Now, and confirm in your wallet."
+                },
+            ],
             levels: [
                 {name: 'Level 1', percent: 5, icon: group},
                 {name: 'Level 2', percent: 3, icon: group},
