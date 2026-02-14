@@ -7,7 +7,7 @@ interface IERC20 {
     function balanceOf(address account) external view returns (uint256);
 }
 
-contract USDBIT {
+contract USDBIT_V2 {
     uint256 constant PERCENTS_DIVIDER = 10000;
     uint256 constant SECONDS_IN_DAY = 1 days;
     uint256 constant CONTRACT_DURATION = 120 days;
