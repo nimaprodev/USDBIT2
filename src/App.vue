@@ -128,7 +128,7 @@
           At USDBIT, you earn a solid 2.5% daily ROI for 120 days — starting with only 20 USDT.<br/>
           Our automated smart-contract system locks your capital securely and rewards you with transparent daily
           profits.<br/>
-          Plus, with our 4-level referral program, you can boost your earnings: 5% from Level 1, 3% from Level 2, 2% from Level 3, 1% from Level 4, 0.5% from Level 5, 0.2% from Level 6, 0.2% from Level 7, and 0.1% from Level 8  paid instantly in
+          Plus, with our 8-level referral program, you can boost your earnings: 5% from Level 1, 3% from Level 2, 2% from Level 3, 1% from Level 4, 0.5% from Level 5, 0.2% from Level 6, 0.2% from Level 7, and 0.1% from Level 8  paid instantly in
           USDT.<br/>
           Join USDBIT today and experience smart, reliable, and reward-driven investing — powered fully by
           blockchain.<br/>
@@ -231,7 +231,7 @@
           <p class="text-justify mt-5 text-base text-gray-500">
             USDBIT runs on a transparent USDT smart contract that rewards you with fixed daily profits for 120 days.
             Your capital stays securely locked while earnings are paid automatically.
-            Our 4-level referral system delivers instant USDT bonuses.
+            Our 8-level referral system delivers instant USDT bonuses.
             USDBIT — smart, stable, and blockchain-driven income.<br><br><br>
             <small>71–75 Shelton Street, Covent Garden, London WC2H 9JQ, United Kingdom</small>
           </p>
