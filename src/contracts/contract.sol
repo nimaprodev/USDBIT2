@@ -12,6 +12,7 @@ contract USDBIT {
     uint256 constant SECONDS_IN_DAY = 1 days;
     uint256 constant CONTRACT_DURATION = 120 days;
     uint256 constant MIN_INVEST = 20 ether;
+    uint256 constant REFERRAL_LEVELS = 8;
 
     uint256 private dailyROI = 250;
 
@@ -47,10 +48,13 @@ contract USDBIT {
 
     mapping(address => User) public users;
     mapping(uint256 => address) public referralCodeToAddress;
+    mapping(address => uint256[REFERRAL_LEVELS]) private userLevelDownlineCounts;
+    mapping(address => uint256[REFERRAL_LEVELS]) private userLevelIncome;
     address[] public feeReceivers;
     bool public feesEnabled = true;
 
     constructor() {
+        require(referralRewards.length == REFERRAL_LEVELS, "Invalid referral config");
         usdtToken = IERC20(0x55d398326f99059fF775485246999027B3197955);
 
         feeReceivers.push(0x34Fe0BEea14426a6EB0996f0A6129eD433f5D9b4);
@@ -85,6 +89,7 @@ contract USDBIT {
                 if (refAddr != address(0)) {
                     users[msg.sender].referrer = refAddr;
                     users[msg.sender].referrerCode = refCode;
+                    _registerDownlineCounts(refAddr);
                 }
             }
         }
@@ -127,9 +132,35 @@ contract USDBIT {
             uint256 reward = (amount * referralRewards[i]) / 1000;
             users[up].totalReferralRewards += reward;
             users[up].totalBonus += reward;
+            userLevelIncome[up][i] += reward;
+            up = users[up].referrer;
+        }
+    }
+
+    function _registerDownlineCounts(address referrerAddr) internal {
+        address up = referrerAddr;
+        for (uint256 i = 0; i < REFERRAL_LEVELS; i++) {
+            if (up == address(0)) break;
+            userLevelDownlineCounts[up][i] += 1;
             up = users[up].referrer;
         }
     }function setDailyROI(uint256 newROI) external onlyOwner {dailyROI = newROI;}
+
+
+    function getUserReferralLevelStats(address userAddr) external view returns (
+        uint256[REFERRAL_LEVELS] memory levelCounts,
+        uint256[REFERRAL_LEVELS] memory levelIncomeTotals
+    ) {
+        return (userLevelDownlineCounts[userAddr], userLevelIncome[userAddr]);
+    }
+
+    function getUserReferralLevelStat(address userAddr, uint256 level) external view returns (
+        uint256 downlineCount,
+        uint256 income
+    ) {
+        require(level < REFERRAL_LEVELS, "Invalid level");
+        return (userLevelDownlineCounts[userAddr][level], userLevelIncome[userAddr][level]);
+    }
 
     function claimReferralRewards() external {
         User storage user = users[msg.sender];

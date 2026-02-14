@@ -190,6 +190,59 @@ export const usdbitABI = [
 	{
 		"inputs": [
 			{
+				"internalType": "address",
+				"name": "userAddr",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "level",
+				"type": "uint256"
+			}
+		],
+		"name": "getUserReferralLevelStat",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "downlineCount",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "income",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "userAddr",
+				"type": "address"
+			}
+		],
+		"name": "getUserReferralLevelStats",
+		"outputs": [
+			{
+				"internalType": "uint256[8]",
+				"name": "levelCounts",
+				"type": "uint256[8]"
+			},
+			{
+				"internalType": "uint256[8]",
+				"name": "levelIncomeTotals",
+				"type": "uint256[8]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
 				"internalType": "uint256",
 				"name": "",
 				"type": "uint256"

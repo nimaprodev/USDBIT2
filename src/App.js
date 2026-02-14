@@ -20,7 +20,10 @@ import {
     getAllowance,
     getBalance,
     getTotalProfit,
-    getUserInfo, withdrawCommissionsRequest, withdrawDividends,
+    getUserInfo,
+    getUserReferralLevelStats,
+    withdrawCommissionsRequest,
+    withdrawDividends,
     withdrawProfit
 } from "./web3.js";
 import {formatEther, parseEther} from "viem";
@@ -99,14 +102,14 @@ export default {
                 },
             ],
             levels: [
-                {name: 'Level 1', percent: 5, icon: group},
-                {name: 'Level 2', percent: 3, icon: group},
-                {name: 'Level 3', percent: 2, icon: group},
-                {name: 'Level 4', percent: 1, icon: group},
-                {name: 'Level 5', percent: 0.5, icon: group},
-                {name: 'Level 6', percent: 0.2, icon: group},
-                {name: 'Level 7', percent: 0.2, icon: group},
-                {name: 'Level 8', percent: 0.1, icon: group},
+                {name: 'Level 1', percent: 5, icon: group, downlineCount: 0, income: '0'},
+                {name: 'Level 2', percent: 3, icon: group, downlineCount: 0, income: '0'},
+                {name: 'Level 3', percent: 2, icon: group, downlineCount: 0, income: '0'},
+                {name: 'Level 4', percent: 1, icon: group, downlineCount: 0, income: '0'},
+                {name: 'Level 5', percent: 0.5, icon: group, downlineCount: 0, income: '0'},
+                {name: 'Level 6', percent: 0.2, icon: group, downlineCount: 0, income: '0'},
+                {name: 'Level 7', percent: 0.2, icon: group, downlineCount: 0, income: '0'},
+                {name: 'Level 8', percent: 0.1, icon: group, downlineCount: 0, income: '0'},
             ]
         };
     },
@@ -130,8 +133,12 @@ export default {
                 this.total_withdraw = formatEther(user_data.totalWithdraw)
                 this.total_deposit = formatEther(user_data.totalDeposit)
 
-
-
+                const referralStats = await getUserReferralLevelStats(account)
+                this.levels = this.levels.map((level, index) => ({
+                    ...level,
+                    downlineCount: referralStats.levelCounts[index] || 0,
+                    income: referralStats.levelIncome[index] || '0',
+                }))
 
                 this.your_reward = await getTotalProfit(th.account)
 

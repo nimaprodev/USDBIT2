@@ -195,6 +195,8 @@
             <div class="flex flex-col text-left">
               <p class="text-primary font-bold text-sm">{{ level.name }}</p>
               <span class="text-xl font-semibold text-white ">{{ level.percent }}%</span>
+              <p class="text-xs text-gray-400 mt-1">Members: {{ level.downlineCount }}</p>
+              <p class="text-xs text-gray-400">Income: {{ formatDisplayNumber(level.income, 4) }} USDT</p>
             </div>
           </div>
         </div>

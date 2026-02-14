@@ -186,6 +186,28 @@ export async function getUserInfo(account) {
     }
 }
 
+export async function getUserReferralLevelStats(account) {
+    try {
+        const result = await publicClient.readContract({
+            address: CONTRACT_ADDRESS,
+            abi: ABI,
+            functionName: 'getUserReferralLevelStats',
+            args: [account],
+        });
+
+        const levelCounts = (result?.[0] || []).map((val) => Number(val));
+        const levelIncome = (result?.[1] || []).map((val) => formatEther(val));
+
+        return {levelCounts, levelIncome};
+    } catch (error) {
+        console.error('Error in getUserReferralLevelStats:', error);
+        return {
+            levelCounts: Array(8).fill(0),
+            levelIncome: Array(8).fill('0'),
+        };
+    }
+}
+
 
 export async function withdrawDividends(account, plan_id) {
     try {
