@@ -238,7 +238,7 @@
           <p v-if="buildCommit" class="mt-3 text-xs text-gray-500">
             Commit: <span class="font-mono">{{ buildCommitShort }}</span>
           </p>
-          <a href="//t.me/usdbit_team" class="text-gray-200 px-4 py-2 rounded-lg border border-grey-300 mt-4 mb-10 flex items-center gap-2">
+          <a href="//t.me/usdbitteam" class="text-gray-200 px-4 py-2 rounded-lg border border-grey-300 mt-4 mb-10 flex items-center gap-2">
             <img :src="telegram" alt="telegram" />
             Telegram Channel
           </a>
