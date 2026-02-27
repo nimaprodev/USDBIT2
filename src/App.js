@@ -33,6 +33,12 @@ export default {
     directives: {
         loading: loadingDirective,
     },
+    computed: {
+        buildCommitShort() {
+            if (!this.buildCommit) return '';
+            return this.buildCommit.length > 12 ? this.buildCommit.slice(0, 12) : this.buildCommit;
+        },
+    },
     data() {
         return {
             // images
@@ -48,6 +54,7 @@ export default {
             trendUp,
             footerLogo,
             telegram,
+            buildCommit: (import.meta?.env?.VITE_GIT_COMMIT_SHA || import.meta?.env?.VITE_COMMIT_SHA || '').trim(),
 
             // component state
             isConnected: false,
